@@ -8,9 +8,8 @@ module IF
     input clk,
     input rst,
     input rv32i_ctrl_packet_t ctrl,
-    // output rv32i_packet_t packet_out,
-    // From other stages
     input rv32i_packet_t packet_in,
+    // output rv32i_packet_t packet_out,
     // Regfile
     output rv32i_word regfile_in
 );
@@ -25,8 +24,8 @@ rv32i_word mdrreg_out;
 rv32i_word pc_out;
 
 assign alu_out = packet_in.data.alu_out;
-assign br_en = {23'b0, packet_in.ctrl.br_en};
-assign u_imm = packet_in.ctrl.u_imm;
+assign br_en = {23'b0, packet_in.data.br_en};
+assign u_imm = packet_in.inst.u_imm;
 assign mdrreg_out = packet_in.data.mdrreg_out;
 assign pc_out = packet_in.data.pc_out;
 

@@ -6,9 +6,8 @@ module ID
     input clk,
     input rst,
     input rv32i_ctrl_packet_t ctrl,
+    input rv32i_packet_t packet_in,
     output rv32i_packet_t packet_out,
-    // From other stages
-    input rv32i_word instruction,
     // Regfile
     output [4:0] rs1,
     output [4:0] rs2,
@@ -17,14 +16,14 @@ module ID
 );
 
 assign packet_out.data.rs1_out = reg_a;
-assign packed_out.data.rs2_out = reg_b;
-assign rs1 = packet_out.ctrl.rs1;
-assign rs2 = packet_out.ctrl.rs2;
+assign packet_out.data.rs2_out = reg_b;
+assign rs1 = packet_out.inst.rs1;
+assign rs2 = packet_out.inst.rs2;
 
 ir IR(.*, 
       .load(ctrl.load_ir),
-      .in(instruction),
-      .out(packet_out.ctrl)
+      .in(packet_in.data.instruction),
+      .out(packet_out.inst)
 );
 
 endmodule

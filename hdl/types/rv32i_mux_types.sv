@@ -57,5 +57,15 @@ typedef enum bit [1:0] {
     ,from_exmem = 2'b10
     ,from_memwb = 2'b01
 } forward_t;
+endpackage
 
+package buffer_load;
+typedef enum bit [2:0] { 
+    wait = 3'b000
+    , use_old = 3'b001
+    ,load_ifid = 3'b010
+    ,load_idex = 3'b011
+    ,load_exmem = 3'b100
+    .load_memwb = 3'b101
+} buffer_load_t;
 endpackage

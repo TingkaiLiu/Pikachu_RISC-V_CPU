@@ -6,6 +6,7 @@ module IF
     input clk,
     input rst,
     input rv32i_ctrl_packet_t ctrl,
+    // input rv32i_packet_t packet_in,
     output rv32i_packet_t packet_out,
     // From other stages
     input rv32i_word alu_out,

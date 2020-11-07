@@ -8,9 +8,9 @@ module EX
     input clk,
     input rst,
     input rv32i_ctrl_packet_t ctrl,
+    input rv32i_packet_t packet_in,
     output rv32i_packet_t packet_out,
     // From other stages
-    input rv32i_packet_t packet_in,
     input rv32i_word from_exmem,
     input rv32i_word from_memwb
 );
@@ -22,7 +22,7 @@ rv32i_word cmpmux_out;
 logic br_en;
 
 assign packet_out.data.alu_out = alu_out;
-assign packet_out.ctrl.br_en = br_en;
+assign packet_out.data.br_en = br_en;
 
 rv32i_word rs1_out;
 rv32i_word rs2_out;
@@ -34,11 +34,11 @@ rv32i_word j_imm;
 
 assign rs1_out = packet_in.data.rs1_out;
 assign rs2_out = packet_in.data.rs2_out;
-assign i_imm = packet_in.ctrl.i_imm;
-assign u_imm = packet_in.ctrl.u_imm;
-assign b_imm = packet_in.ctrl.b_imm;
-assign s_imm = packet_in.ctrl.s_imm;
-assign j_imm = packet_in.ctrl.j_imm;
+assign i_imm = packet_in.inst.i_imm;
+assign u_imm = packet_in.inst.u_imm;
+assign b_imm = packet_in.inst.b_imm;
+assign s_imm = packet_in.inst.s_imm;
+assign j_imm = packet_in.inst.j_imm;
 
 alu ALU(
     .aluop(ctrl.aluop),
