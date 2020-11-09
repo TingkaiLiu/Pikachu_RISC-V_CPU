@@ -53,7 +53,7 @@ typedef struct packed {
     logic data_mem_write,
     logic [3:0] data_mem_byte_enable,
     // WB
-    logic wb; // Indicate whether WB stage is needed. 
+    logic wb; // Indicate whether WB stage is needed. Same value as load_regfile...
     regfilemux::regfilemux_sel_t regfilemux_sel,
     logic load_regfile
     // FWU
