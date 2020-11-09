@@ -53,13 +53,13 @@ module cpu_control(
 );
 
 // Move the pipeline
-assign load_buffers = inst_mem_resp && (!id_ex.ctrl.mem || edata_mem_resp);
+assign load_buffers = inst_mem_resp && (!ex_mem.ctrl.mem || edata_mem_resp);
 
 // Buffers
 assign if_id_sel = buffer_load_mux::load_ifid;
 assign id_ex_sel = buffer_load_mux::load_idex;
 assign ex_mem_sel = id_ex.ctrl.ex ? buffer_load_mux::exmem : buffer_load_mux::use_old;
-assign mem_wb_sel = id_ex.ctrl.mem ? buffer_load_mux::memwb : buffer_load_mux::use_old;
+assign mem_wb_sel = ex_mem.ctrl.mem ? buffer_load_mux::memwb : buffer_load_mux::use_old;
 
 // IF TODO: use a module to handle control hazard?
 always_comb begin
