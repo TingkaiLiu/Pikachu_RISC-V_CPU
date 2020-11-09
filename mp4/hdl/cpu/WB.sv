@@ -11,11 +11,14 @@ module WB
     input rv32i_packet_t wb_in,
 
     // Regfile
-    output rv32i_word regfile_in
+    output rv32i_word regfile_in,
+    output rv32i_reg dest
 );
 
 rv32i_word regfilemux_out;
+
 assign regfile_in = regfilemux_out;
+assign dest = wb_in.inst.rd;
 
 rv32i_word alu_out;
 rv32i_word br_en;
