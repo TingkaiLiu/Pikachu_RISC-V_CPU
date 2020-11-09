@@ -26,6 +26,7 @@ assign ex_out.data.br_en = br_en;
 
 rv32i_word rs1_out;
 rv32i_word rs2_out;
+rv32i_word pc_out;
 rv32i_word i_imm;
 rv32i_word u_imm;
 rv32i_word b_imm;
@@ -34,6 +35,7 @@ rv32i_word j_imm;
 
 assign rs1_out = ex_in.data.rs1_out;
 assign rs2_out = ex_in.data.rs2_out;
+assign pc_out = ex_in.data.pc;
 assign i_imm = ex_in.inst.i_imm;
 assign u_imm = ex_in.inst.u_imm;
 assign b_imm = ex_in.inst.b_imm;
@@ -56,13 +58,13 @@ cmp CMP(
 
 always_comb begin : ALUMUXES
 
-    cmp_mux_out = rs2_out;
+   cmpmux_out = rs2_out;
 	alumux1_out = rs1_out;
 	alumux2_out = i_imm;
 
 	unique case(ctrl.cmpmux_sel)
-        cmpmux::rs2_out: cmp_mux_out = rs2_out;
-        cmpmux::i_imm: cmp_mux_out = i_imm;
+        cmpmux::rs2_out: cmpmux_out = rs2_out;
+        cmpmux::i_imm: cmpmux_out = i_imm;
         default: `BAD_MUX_SEL;
     endcase
 
