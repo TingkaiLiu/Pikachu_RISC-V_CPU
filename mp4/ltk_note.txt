@@ -1,0 +1,12 @@
+2020.11.9
+    Think carefully about IF
+        only load pc when pipeline moves
+        need to know whether br_en is useful (whether it is a BR inst)
+            handle in control instead, since JAL and JALR won't have that 
+    Clock gating is feasible when stage is not needed 
+    Pass control signals from control or buffer?
+        Let use control to pass, although there is a copy in buffer
+        in this way the skipping would be easier
+    Problem: The ID also need two cycles
+        although it will be covered by IF and MEM
+        but it don't have a way to indicate it is done 
