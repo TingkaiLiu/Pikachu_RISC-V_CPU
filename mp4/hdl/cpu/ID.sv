@@ -13,7 +13,7 @@ module ID
     output rv32i_opcode opcode, 
     output logic [2:0] funct3, 
     output logic [6:0] funct7,
-    input rv32i_ctrl_packet_t ctrl
+    input rv32i_ctrl_packet_t ctrl,
     
     // Connection with regfile
     output logic [4:0] rs1,
