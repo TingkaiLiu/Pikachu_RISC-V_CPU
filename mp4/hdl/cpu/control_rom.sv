@@ -40,8 +40,8 @@ function void set_defaults();
     ctrl.regfilemux_sel = regfilemux::alu_out;
     ctrl.load_regfile = 0;
     // FWU TODO:
-    ctrl.alumux1_fw = forward::from_index;
-    ctrl.alumux2_fw = forward::from_index;
+    ctrl.alumux1_fw = forward::from_idex;
+    ctrl.alumux2_fw = forward::from_idex;
 
 endfunction
 
@@ -52,8 +52,8 @@ function void setALU(alumux::alumux1_sel_t sel1, alumux::alumux2_sel_t sel2, alu
 endfunction
 
 function void setCMP(cmpmux::cmpmux_sel_t sel, branch_funct3_t op);
-    cmpmux_sel = sel;
-    cmpop = op;
+    ctrl.cmpmux_sel = sel;
+    ctrl.cmpop = op;
 endfunction
 
 function void loadRegfile(regfilemux::regfilemux_sel_t sel);
@@ -102,7 +102,7 @@ always_comb begin
         end
         op_br: begin
             ctrl.ex = 1;
-            setCMP(cmpmux::rs2_out, branch_funct3);
+            setCMP(cmpmux::rs2_out, branch_funct3_t'(funct3));
 
             ctrl.ex = 0;
             ctrl.wb = 0;
@@ -124,9 +124,9 @@ always_comb begin
             endcase
             // Useful for assigning values into register, but not reading from memory
             case (load_funct3_t'(funct3))
-                lw: data_mem_byte_enable = 4'b1111;
-                lh, lhu: data_mem_byte_enable = (4'b0011 << control_mem_offset);
-                lb, lbu: data_mem_byte_enable = (4'b0001 << control_mem_offset);
+                lw: ctrl.data_mem_byte_enable = 4'b1111;
+                lh, lhu: ctrl.data_mem_byte_enable = (4'b0011 << control_mem_offset);
+                lb, lbu: ctrl.data_mem_byte_enable = (4'b0001 << control_mem_offset);
             endcase
         end
         op_store: begin
