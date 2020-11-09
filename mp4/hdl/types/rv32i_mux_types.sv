@@ -50,6 +50,7 @@ typedef enum bit [3:0] {
     ,lh        = 4'b0111
     ,lhu       = 4'b1000  // unsigned halfword
 } regfilemux_sel_t;
+endpackage
 
 package forward;
 typedef enum bit [1:0] { 
@@ -67,6 +68,6 @@ typedef enum bit [2:0] {
     ,load_ifid = 3'b010
     ,load_idex = 3'b011
     ,load_exmem = 3'b100
-    .load_memwb = 3'b101
+    ,load_memwb = 3'b101
 } buffer_sel_t;
 endpackage

@@ -10,3 +10,5 @@
     Problem: The ID also need two cycles
         although it will be covered by IF and MEM
         but it don't have a way to indicate it is done 
+    use_old in buffer mux since not necessary
+        since it won't affect other original value if new but invalid data loaded
