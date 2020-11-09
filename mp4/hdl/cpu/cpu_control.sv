@@ -53,7 +53,7 @@ module cpu_control(
 );
 
 // Move the pipeline
-assign load_buffers = inst_mem_resp & data_mem_resp;
+assign load_buffers = inst_mem_resp && (!id_ex.ctrl.mem || edata_mem_resp);
 
 // Buffers
 assign if_id_sel = buffer_load_mux::load_ifid;
