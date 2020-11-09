@@ -30,7 +30,7 @@ assign alu_out = wb_in.data.alu_out;
 assign br_en = {23'b0, wb_in.data.br_en};
 assign u_imm = wb_in.inst.u_imm;
 assign mdrreg_out = wb_in.data.mdrreg_out;
-assign pc_out = wb_in.data.pc_out;
+assign pc_out = wb_in.data.pc;
 
 always_comb begin : REGFILEMUX
 
