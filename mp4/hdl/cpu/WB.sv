@@ -12,13 +12,15 @@ module WB
 
     // Regfile
     output rv32i_word regfile_in,
-    output rv32i_reg dest
+    output rv32i_reg dest,
+    output logic load_regfile
 );
 
 rv32i_word regfilemux_out;
 
 assign regfile_in = regfilemux_out;
 assign dest = wb_in.inst.rd;
+assign load_regfile = ctrl.load_regfile;
 
 rv32i_word alu_out;
 rv32i_word br_en;
@@ -48,7 +50,7 @@ always_comb begin : REGFILEMUX
                 4'b0010: regfilemux_out = {{24{mdrreg_out[15]}}, mdrreg_out[15:8]};
                 4'b0100: regfilemux_out = {{24{mdrreg_out[23]}}, mdrreg_out[23:16]};
                 4'b1000: regfilemux_out = {{24{mdrreg_out[31]}}, mdrreg_out[31:24]};
-                default: regfilemux_out = mdrreg_out;
+                default: $fatal("WB: Bad rmask of lb!\n");
             endcase
         end
         regfilemux::lbu: begin
@@ -57,21 +59,21 @@ always_comb begin : REGFILEMUX
                 4'b0010: regfilemux_out = {24'b0, mdrreg_out[15:8]};
                 4'b0100: regfilemux_out = {24'b0, mdrreg_out[23:16]};
                 4'b1000: regfilemux_out = {24'b0, mdrreg_out[31:24]};
-                default: regfilemux_out = mdrreg_out;
+                default: $fatal("WB: Bad rmask of lbu!\n");
             endcase
         end
         regfilemux::lh: begin
             case (wb_in.data.rmask)
                 4'b0011: regfilemux_out = {{16{mdrreg_out[15]}}, mdrreg_out[15:0]};
                 4'b1100: regfilemux_out = {{16{mdrreg_out[31]}}, mdrreg_out[31:16]};
-                default: regfilemux_out = mdrreg_out;
+                default: $fatal("WB: Bad rmask of lh!\n");
             endcase
         end
         regfilemux::lhu: begin
             case(wb_in.data.rmask)
                 4'b0011: regfilemux_out = {16'b0, mdrreg_out[15:0]};
                 4'b1100: regfilemux_out = {16'b0, mdrreg_out[31:16]};
-                default: regfilemux_out = mdrreg_out;
+                default: $fatal("WB: Bad rmask of lhu!\n");
             endcase
         end
         default: `BAD_MUX_SEL;
