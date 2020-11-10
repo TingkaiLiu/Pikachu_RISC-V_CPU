@@ -29,7 +29,7 @@ always_comb begin
         op_load: begin
             mem_out.data.wmask = 0;
             case (load_funct3_t'(mem_in.inst.funct3))
-                lw: mem_out.rmask = 4'b1111;
+                lw: mem_out.data.rmask = 4'b1111;
                 lh, lhu: mem_out.data.rmask = (4'b0011 << mem_offset);
                 lb, lbu: mem_out.data.rmask = (4'b0001 << mem_offset);
             endcase
