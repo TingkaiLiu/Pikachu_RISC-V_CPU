@@ -34,7 +34,6 @@ function void set_defaults();
     ctrl.mem = 0;
     ctrl.data_mem_read = 0;
     ctrl.data_mem_write = 0;
-    ctrl.data_mem_byte_enable = 0;
     // WB
     ctrl.wb = 0;
     ctrl.regfilemux_sel = regfilemux::alu_out;

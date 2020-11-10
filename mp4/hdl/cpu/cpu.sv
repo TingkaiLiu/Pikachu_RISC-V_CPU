@@ -7,14 +7,20 @@ module cpu(
     input logic clk, rst,
 
     // Memory
+    output rv32i_word inst_mem_address,
     output logic inst_mem_read,
     output logic inst_mem_write,
     output logic [3:0] inst_mem_byte_enable,
+    input rv32i_word inst_mem_rdata,
+    output rv32i_word inst_mem_wdata,
     input logic inst_mem_resp,
 
+    output rv32i_word data_mem_address,
     output logic data_mem_read,
     output logic data_mem_write,
     output logic [3:0] data_mem_byte_enable,
+    input rv32i_word data_mem_rdata,
+    output rv32i_word data_mem_wdata,
     input logic data_mem_resp
 );
 
@@ -33,7 +39,7 @@ rv32i_packet_t mem_wb;
 logic br_en;
 rv32i_word alu_out;
 
-pcmux::pcmux_sel_t pc_mux_sel;
+pcmux::pcmux_sel_t pcmux_sel;
 rv32i_ctrl_packet_t ex_ctrl;
 rv32i_ctrl_packet_t mem_ctrl;
 rv32i_ctrl_packet_t wb_ctrl;
@@ -49,7 +55,7 @@ rv32i_ctrl_packet_t ctrl;
 // Connection with regfile
 logic load_regfile;
 logic [31:0] regfile_in;
-logic [4:0] src_a, src_b, dest;
+logic [4:0] rs1, rs2, dest;
 logic [31:0] reg_a, reg_b;
 
 cpu_control control(.*);
@@ -70,14 +76,17 @@ buffer IF_ID(
 
 ID ID0(.*);
 
-regfile regfile0(.*);
+regfile regfile0(
+    .*, .load(load_regfile), .in(regfile_in),
+    .src_a(rs1), .src_b(rs2)
+);
 
 buffer ID_EX(
     .*, .load(load_buffers), .buffer_sel(id_ex_sel),
     .packet_in_old(id_in), .packet_in_new(id_out), .packet_out(id_ex)
 );
 
-EX EX0(.*, .ctrl(ex_ctrl));
+EX EX0(.*, .ctrl(ex_ctrl), .from_exmem(0), .from_memwb(0)); // TODO:
 
 buffer EX_MEM(
     .*, .load(load_buffers), .buffer_sel(ex_mem_sel),

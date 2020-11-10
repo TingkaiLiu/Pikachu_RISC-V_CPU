@@ -28,7 +28,7 @@ module cpu_control(
     input logic br_en,
 
     // Stages
-    output pcmux::pcmux_sel_t pc_mux_sel, // IF control: only useful for handling branch 
+    output pcmux::pcmux_sel_t pcmux_sel, // IF control: only useful for handling branch 
     // output rv32i_ctrl_packet_t id_ctrl, // constant output, but assigned by control for consistency
     output rv32i_ctrl_packet_t ex_ctrl,
     output rv32i_ctrl_packet_t mem_ctrl,
@@ -37,7 +37,6 @@ module cpu_control(
     // Memory
     output logic inst_mem_read,
     output logic inst_mem_write,
-    output logic inst_mem_byte_enable,
     input logic inst_mem_resp,
 
     output logic data_mem_read,
@@ -51,20 +50,19 @@ assign load_buffers = inst_mem_resp && (!ex_mem.ctrl.mem || data_mem_resp);
 // Buffers
 assign if_id_sel = buffer_load_mux::load_ifid;
 assign id_ex_sel = buffer_load_mux::load_idex;
-assign ex_mem_sel = id_ex.ctrl.ex ? buffer_load_mux::exmem : buffer_load_mux::use_old;
-assign mem_wb_sel = ex_mem.ctrl.mem ? buffer_load_mux::memwb : buffer_load_mux::use_old;
+assign ex_mem_sel = id_ex.ctrl.ex ? buffer_load_mux::load_exmem : buffer_load_mux::use_old;
+assign mem_wb_sel = ex_mem.ctrl.mem ? buffer_load_mux::load_memwb : buffer_load_mux::use_old;
 
 // IF TODO: use a module to handle control hazard?
 always_comb begin
-    pc_mux_sel = pcmux::pc_plus4;
+    pcmux_sel = pcmux::pc_plus4;
     inst_mem_read = !load_buffers;
     inst_mem_write = 0;
-    inst_mem_byte_enable = 0;
 
     case (id_ex.inst.opcode)
-        op_jal: pc_mux_sel = pcmux::alu_out;
-        op_jalr: pcmux::alu_mod2;
-        op_br: if (br_en) pc_mux_sel = pcmux::alu_out;
+        op_jal: pcmux_sel = pcmux::alu_out;
+        op_jalr: pcmux_sel = pcmux::alu_mod2;
+        op_br: if (br_en) pcmux_sel = pcmux::alu_out;
         default: ;
     endcase
 end
