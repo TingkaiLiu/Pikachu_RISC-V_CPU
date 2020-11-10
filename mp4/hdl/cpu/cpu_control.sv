@@ -11,12 +11,6 @@
 module cpu_control(
     input logic clk, rst,
     
-    // For ID to access control rom
-    // input rv32i_opcode opcode, 
-    // input logic [2:0] funct3, 
-    // input logic [6:0] funct7,
-    // output rv32i_ctrl_packet_t ctrl,
-    
     // Buffers loads
     output logic load_buffers, // load all buffer, which is equivilant to move the pipeline
     output buffer_load_mux::buffer_sel_t if_id_sel, // constant output, but assigned by control for consistency
@@ -48,12 +42,11 @@ module cpu_control(
 
     output logic data_mem_read,
     output logic data_mem_write,
-    output logic data_mem_byte_enable,
     input logic data_mem_resp
 );
 
 // Move the pipeline
-assign load_buffers = inst_mem_resp && (!ex_mem.ctrl.mem || edata_mem_resp);
+assign load_buffers = inst_mem_resp && (!ex_mem.ctrl.mem || data_mem_resp);
 
 // Buffers
 assign if_id_sel = buffer_load_mux::load_ifid;
@@ -83,7 +76,6 @@ assign ex_ctrl = id_ex.ctrl;
 assign mem_ctrl = ex_mem.ctrl;
 assign data_mem_read = ex_mem.ctrl.data_mem_read;
 assign data_mem_write = ex_mem.ctrl.data_mem_write;
-assign data_mem_byte_enable = ex_mem.ctrl.data_mem_byte_enable;
 
 // WB
 assign wb_ctrl = mem_wb.ctrl;

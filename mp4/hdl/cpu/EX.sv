@@ -10,6 +10,11 @@ module EX
     input rv32i_ctrl_packet_t ctrl,
     input rv32i_packet_t ex_in,
     output rv32i_packet_t ex_out,
+
+    // Spcial output
+    logic br_en,
+    rv32i_word alu_out,
+    
     // From other stages
     input rv32i_word from_exmem,
     input rv32i_word from_memwb
@@ -17,9 +22,7 @@ module EX
 
 rv32i_word alumux1_out;
 rv32i_word alumux2_out;
-rv32i_word alu_out;
 rv32i_word cmpmux_out;
-logic br_en;
 
 assign ex_out.data.alu_out = alu_out;
 assign ex_out.data.br_en = br_en;

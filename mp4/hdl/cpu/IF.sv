@@ -13,6 +13,7 @@ module IF
     // I-cache
     output rv32i_word inst_mem_address,
     input rv32i_word inst_mem_rdata,
+    output logic [3:0] inst_mem_byte_enable,
     // To next stage
     output rv32i_packet_t if_out
 );
@@ -21,6 +22,7 @@ rv32i_word pcmux_out;
 rv32i_word pc_out;
 
 assign inst_mem_address = pc_out;
+assign inst_mem_byte_enable = 0;
 
 assign if_out.data.pc = pc_out;
 assign if_out.data.instruction = inst_mem_rdata;

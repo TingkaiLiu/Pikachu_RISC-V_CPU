@@ -7,8 +7,10 @@
     Pass control signals from control or buffer?
         Let use control to pass, although there is a copy in buffer
         in this way the skipping would be easier
-    Problem: The ID also need two cycles
+    Problem solved: The ID also need two cycles
         although it will be covered by IF and MEM
         but it don't have a way to indicate it is done 
+        Not the case! Regfile output uses combinational logics
     use_old in buffer mux since not necessary
         since it won't affect other original value if new but invalid data loaded
+    cp2 design Tuesday night

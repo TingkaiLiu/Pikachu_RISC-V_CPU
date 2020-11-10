@@ -43,6 +43,8 @@ always_comb begin
         end
         buffer_load_mux::load_memwb: begin
             packet_in.data.mdrreg_out = packet_in_new.data.mdrreg_out;
+            packet_in.data.rmask = packet_in_new.data.rmask;
+            packet_in.data.wmask = packet_in_new.data.wmask;
         end
         default: $fatal("Bad buffer sel!\n"); 
     endcase

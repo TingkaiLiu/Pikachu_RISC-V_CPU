@@ -30,6 +30,8 @@ typedef struct packed {
     logic br_en;
     // MEM
     rv32i_word mdrreg_out;
+    logic [3:0] rmask;
+    logic [3:0] wmask;
 } rv32i_data_packet_t;
 
 // The packet gnerated by ID, handled by control logic
@@ -51,7 +53,6 @@ typedef struct packed {
     logic mem; // Indicate whether MEM stage is needed. 
     logic data_mem_read;
     logic data_mem_write;
-    logic [3:0] data_mem_byte_enable;
     // WB
     logic wb; // Indicate whether WB stage is needed. Same value as load_regfile...
     regfilemux::regfilemux_sel_t regfilemux_sel;
