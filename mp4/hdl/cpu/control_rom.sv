@@ -122,12 +122,7 @@ always_comb begin
                 lbu: loadRegfile(regfilemux::lbu);
                 lhu: loadRegfile(regfilemux::lhu);
             endcase
-            // Useful for assigning values into register, but not reading from memory
-            case (load_funct3_t'(funct3))
-                lw: ctrl.data_mem_byte_enable = 4'b1111;
-                lh, lhu: ctrl.data_mem_byte_enable = (4'b0011 << control_mem_offset);
-                lb, lbu: ctrl.data_mem_byte_enable = (4'b0001 << control_mem_offset);
-            endcase
+            
         end
         op_store: begin
             ctrl.ex = 1;
@@ -135,11 +130,6 @@ always_comb begin
 
             ctrl.mem = 1;
             ctrl.data_mem_write = 1;
-            case (store_funct3_t'(funct3))
-                sw: ctrl.data_mem_byte_enable = 4'b1111;
-                sh: ctrl.data_mem_byte_enable = (4'b0011 << control_mem_offset);
-                sb: ctrl.data_mem_byte_enable = (4'b0001 << control_mem_offset);
-            endcase
 
             ctrl.wb = 0;
         end

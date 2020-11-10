@@ -43,7 +43,7 @@ always_comb begin : REGFILEMUX
         regfilemux::lw: regfilemux_out = mdrreg_out;
         regfilemux::pc_plus4: regfilemux_out = pc_out + 4;
         regfilemux::lb: begin
-            case (ctrl.data_mem_byte_enable)
+            case (wb_in.data.rmask)
                 4'b0001: regfilemux_out = {{24{mdrreg_out[7]}}, mdrreg_out[7:0]};
                 4'b0010: regfilemux_out = {{24{mdrreg_out[15]}}, mdrreg_out[15:8]};
                 4'b0100: regfilemux_out = {{24{mdrreg_out[23]}}, mdrreg_out[23:16]};
@@ -52,7 +52,7 @@ always_comb begin : REGFILEMUX
             endcase
         end
         regfilemux::lbu: begin
-            case (ctrl.data_mem_byte_enable)
+            case (wb_in.data.rmask)
                 4'b0001: regfilemux_out = {24'b0, mdrreg_out[7:0]};
                 4'b0010: regfilemux_out = {24'b0, mdrreg_out[15:8]};
                 4'b0100: regfilemux_out = {24'b0, mdrreg_out[23:16]};
@@ -61,14 +61,14 @@ always_comb begin : REGFILEMUX
             endcase
         end
         regfilemux::lh: begin
-            case (ctrl.data_mem_byte_enable)
+            case (wb_in.data.rmask)
                 4'b0011: regfilemux_out = {{16{mdrreg_out[15]}}, mdrreg_out[15:0]};
                 4'b1100: regfilemux_out = {{16{mdrreg_out[31]}}, mdrreg_out[31:16]};
                 default: regfilemux_out = mdrreg_out;
             endcase
         end
         regfilemux::lhu: begin
-            case(ctrl.data_mem_byte_enable)
+            case(wb_in.data.rmask)
                 4'b0011: regfilemux_out = {16'b0, mdrreg_out[15:0]};
                 4'b1100: regfilemux_out = {16'b0, mdrreg_out[31:16]};
                 default: regfilemux_out = mdrreg_out;

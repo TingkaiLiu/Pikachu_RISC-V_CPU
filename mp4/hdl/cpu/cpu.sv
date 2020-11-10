@@ -9,12 +9,12 @@ module cpu(
     // Memory
     output logic inst_mem_read,
     output logic inst_mem_write,
-    output logic inst_mem_byte_enable,
+    output logic [3:0] inst_mem_byte_enable,
     input logic inst_mem_resp,
 
     output logic data_mem_read,
     output logic data_mem_write,
-    output logic data_mem_byte_enable,
+    output logic [3:0] data_mem_byte_enable,
     input logic data_mem_resp
 );
 
