@@ -46,7 +46,7 @@ always_comb begin
 
             data_mem_byte_enable = mem_out.data.wmask;
         end
-        default: $fatal("Bad opcode in MEM!\n");
+        // default: $fatal("Bad opcode in MEM!\n");
     endcase
 end
 

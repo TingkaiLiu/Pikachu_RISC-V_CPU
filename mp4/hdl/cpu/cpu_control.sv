@@ -8,6 +8,9 @@
     and pass the control part to corresponding components
 */
 
+import rv32i_types::*;
+import rv32i_packet::*;
+
 module cpu_control(
     input logic clk, rst,
     
