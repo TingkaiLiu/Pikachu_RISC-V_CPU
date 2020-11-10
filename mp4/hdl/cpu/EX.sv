@@ -12,8 +12,8 @@ module EX
     output rv32i_packet_t ex_out,
 
     // Spcial output
-    logic br_en,
-    rv32i_word alu_out,
+    output logic br_en,
+    output rv32i_word alu_out,
     
     // From other stages
     input rv32i_word from_exmem,
