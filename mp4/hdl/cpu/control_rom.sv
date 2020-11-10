@@ -216,7 +216,7 @@ always_comb begin
             endcase
         end
 
-        default: $fatal("unknown opcode\n");
+        // default: $fatal("unknown opcode\n");
     endcase
 end
 

@@ -1,3 +1,6 @@
+import rv32i_types::*;
+import rv32i_packet::*;
+
 module mp4(
     input logic clk, rst,
 
