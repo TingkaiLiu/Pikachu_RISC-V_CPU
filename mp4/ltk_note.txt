@@ -14,3 +14,10 @@
     use_old in buffer mux since not necessary
         since it won't affect other original value if new but invalid data loaded
     cp2 design Tuesday night
+
+2020.11.10
+    When push to github, \n will be replaced by \r\n, 
+        which will cost bin to fail
+    Next time:
+        See why infinite loop happens by running for a short time
+        Check whether the connection is correct
