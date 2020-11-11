@@ -28,3 +28,7 @@
     Bug1:
         PC didn't change at branch
         Reason: forgot to set ALU for EX when BR
+    Bug2:
+        Invalid data read from D memory
+        Forgot to mask the low 2 bits for mem_addr
+        I-cache access is always 4 byte allign so no need for that

@@ -15,7 +15,7 @@ module MEM
     output logic [3:0] data_mem_byte_enable
 );
 
-assign data_mem_address = mem_in.data.alu_out;
+assign data_mem_address = {mem_in.data.alu_out[31:2], 2'b0};
 assign data_mem_wdata = mem_in.data.rs2_out;
 assign mem_out.data.mdrreg_out = data_mem_rdata;
 
