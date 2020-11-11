@@ -21,3 +21,10 @@
     Next time:
         See why infinite loop happens by running for a short time
         Check whether the connection is correct
+
+2020.11.11
+    Memory works well now: can get correct instruction
+    NOP is encoded as ADDi x0, x0, 0
+    Bug1:
+        PC didn't change at branch
+        Reason: forgot to set ALU for EX when BR

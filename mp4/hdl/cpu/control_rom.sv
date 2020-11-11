@@ -102,6 +102,7 @@ always_comb begin
         op_br: begin
             ctrl.ex = 1;
             setCMP(cmpmux::rs2_out, branch_funct3_t'(funct3));
+            setALU(alumux::pc_out, alumux::b_imm, alu_add);
 
             ctrl.ex = 0;
             ctrl.wb = 0;
