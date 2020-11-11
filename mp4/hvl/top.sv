@@ -52,9 +52,9 @@ mp4 dut(
 assign rvfi.commit = 0; // Set high when a valid instruction is modifying regfile or PC
 
 // Set high when you detect an infinite loop
-assign rvfi.halt = dut.cpu0.EX0.ex_in.inst.opcode == op_br && 
-                    (dut.cpu0.EX0.ex_in.inst.rs1 == dut.cpu0.EX0.ex_in.inst.rs2) && 
-                    (dut.cpu0.EX0.ex_in.data.pc == dut.cpu0.EX0.alu_out);   
+assign rvfi.halt = dut.cpu0.WB0.wb_in.inst.opcode == op_br && 
+                    (dut.cpu0.WB0.wb_in.inst.rs1 == dut.cpu0.WB0.wb_in.inst.rs2) && 
+                    (dut.cpu0.WB0.wb_in.data.pc == dut.cpu0.WB0.wb_in.data.alu_out);   
 
 initial rvfi.order = 0;
 always @(posedge itf.clk iff rvfi.commit) rvfi.order <= rvfi.order + 1; // Modify for OoO
