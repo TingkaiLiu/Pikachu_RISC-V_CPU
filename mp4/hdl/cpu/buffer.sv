@@ -45,6 +45,9 @@ always_comb begin
             packet_in.data.mdrreg_out = packet_in_new.data.mdrreg_out;
             packet_in.data.rmask = packet_in_new.data.rmask;
             packet_in.data.wmask = packet_in_new.data.wmask;
+            packet_in.data.mem_addr = packet_in_new.data.mem_addr;
+            packet_in.data.mem_rdata = packet_in_new.data.mem_rdata;
+            packet_in.data.mem_wdata = packet_in_new.data.mem_wdata;
         end
         default: $fatal("Bad buffer sel!\n"); 
     endcase

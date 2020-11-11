@@ -50,6 +50,56 @@ assign rs2 = id_out.inst.rs2;
 assign id_out.data.rs1_out = reg_a;
 assign id_out.data.rs2_out = reg_b;
 
+/***************** USED BY RVFIMON --- ONLY MODIFY WHEN TOLD *****************/
+logic trap;
+assign id_out.inst.trap = trap;
+
+branch_funct3_t branch_funct3;
+store_funct3_t store_funct3;
+load_funct3_t load_funct3;
+arith_funct3_t arith_funct3;
+
+assign arith_funct3 = arith_funct3_t'(funct3);
+assign branch_funct3 = branch_funct3_t'(funct3);
+assign load_funct3 = load_funct3_t'(funct3);
+assign store_funct3 = store_funct3_t'(funct3);
+
+always_comb
+begin : trap_check
+    trap = 0;
+
+    case (opcode)
+        op_lui, op_auipc, op_imm, op_reg, op_jal, op_jalr:;
+
+        op_br: begin
+            case (branch_funct3)
+                beq, bne, blt, bge, bltu, bgeu:;
+                default: trap = 1;
+            endcase
+        end
+
+        op_load: begin
+            case (load_funct3)
+                lw: ;
+                lh, lhu: ;
+                lb, lbu: ;
+                default: trap = 1;
+            endcase
+        end
+
+        op_store: begin
+            case (store_funct3)
+                sw: ;
+                sh: ;
+                sb: ;
+                default: trap = 1;
+            endcase
+        end
+
+        default: trap = 1;
+    endcase
+end
+/*****************************************************************************/
 
 
 

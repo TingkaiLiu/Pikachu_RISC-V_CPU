@@ -15,6 +15,7 @@ typedef struct packed {
     logic [4:0] rs1;
     logic [4:0] rs2;
     logic [4:0] rd;
+    logic trap;
 } rv32i_inst_packet_t;
 
 // The data passed in the pipeline, filled by different stages
@@ -32,6 +33,9 @@ typedef struct packed {
     rv32i_word mdrreg_out;
     logic [3:0] rmask;
     logic [3:0] wmask;
+    rv32i_word mem_addr;
+    rv32i_word mem_rdata;
+    rv32i_word mem_wdata;
 } rv32i_data_packet_t;
 
 // The packet gnerated by ID, handled by control logic
