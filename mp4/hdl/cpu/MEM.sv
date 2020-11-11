@@ -19,6 +19,10 @@ assign data_mem_address = {mem_in.data.alu_out[31:2], 2'b0};
 assign data_mem_wdata = mem_in.data.rs2_out;
 assign mem_out.data.mdrreg_out = data_mem_rdata;
 
+assign mem_out.data.mem_addr = data_mem_address;
+assign mem_out.data.mem_rdata = data_mem_rdata;
+assign mem_out.data.mem_wdata = data_mem_wdata;
+
 logic [1:0] mem_offset; // The low 2 bit of the address
 assign mem_offset = mem_in.data.alu_out[1:0];
 
