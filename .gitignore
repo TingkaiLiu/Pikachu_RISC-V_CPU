@@ -1,5 +1,5 @@
-*.qpf
-*.qsf
+# *.qpf
+# *.qsf
 modelsim.ini
 rtl_work
 vsim.wlf
