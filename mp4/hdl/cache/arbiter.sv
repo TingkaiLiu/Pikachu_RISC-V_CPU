@@ -16,7 +16,7 @@ module arbiter
     input llc_cacheline dmem_wdata,
     output logic dmem_resp,
     input rv32i_word dmem_address,
-    // Memory
+    // Adaptor
     output logic mmem_read,
     output logic mmem_write,
     input llc_cacheline mmem_rdata,

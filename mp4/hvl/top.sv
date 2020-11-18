@@ -108,6 +108,17 @@ dcache signals:
 Please refer to tb_itf.sv for more information.
 */
 
+// assign itf.inst_read  = 
+// assign itf.inst_addr  = 
+// assign itf.inst_resp  = 
+// assign itf.inst_rdata = 
+// assign itf.data_read  = 
+// assign itf.data_write = 
+// assign itf.data_mbe   = 
+// assign itf.data_addr  = 
+// assign itf.data_wdata = 
+// assign itf.data_resp  = 
+// assign itf.data_rdata = 
 /*********************** End Shadow Memory Assignments ***********************/
 
 // Set this to the proper value
@@ -136,21 +147,12 @@ mp4 dut(
     .rst                    (itf.rst),
 
     // Memory
-    .inst_mem_address       (itf.inst_addr),
-    .inst_mem_read          (itf.inst_read),
-    .inst_mem_write         (), // hang
-    .inst_mem_byte_enable   (), // hang
-    .inst_mem_rdata         (itf.inst_rdata),
-    .inst_mem_wdata         (), // hang
-    .inst_mem_resp          (itf.inst_resp),
-
-    .data_mem_address       (itf.data_addr),
-    .data_mem_read          (itf.data_read),
-    .data_mem_write         (itf.data_write),
-    .data_mem_byte_enable   (itf.data_mbe),
-    .data_mem_rdata         (itf.data_rdata),
-    .data_mem_wdata         (itf.data_wdata),
-    .data_mem_resp          (itf.data_resp)
+    .mem_read               (itf.mem_read),
+    .mem_write              (itf.mem_write),
+    .mem_wdata              (itf.mem_wdata),
+    .mem_rdata              (itf.mem_rdata),
+    .mem_address            (itf.mem_addr),
+    .mem_resp               (itf.mem_resp)
 );
 
 /***************************** End Instantiation *****************************/
