@@ -2,7 +2,6 @@
 valid, dirty, tag, and LRU arrays, comparators, muxes,
 logic gates and other supporting logic. */
 import rv32i_types::*;
-import cache_types::*;
 
 module cache_datapath #(
     parameter s_offset = 5,
