@@ -58,7 +58,7 @@ cache Icache(
     .mem_read           (inst_mem_read),
     .mem_write          (inst_mem_write),
     .mem_resp           (inst_mem_resp),
-    // arbiter
+    // Arbiter
     .pmem_read          (imem_read),
     .pmem_write         (),
     .pmem_rdata         (imem_rdata),
