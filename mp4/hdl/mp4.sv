@@ -29,7 +29,7 @@ rv32i_word data_mem_rdata;
 rv32i_word data_mem_wdata;
 logic data_mem_resp;
 
-cpu cpu0(.*);
+cpu cpu(.*);
 cache_top cache_top(.*);
 
 endmodule : mp4
