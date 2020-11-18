@@ -133,7 +133,7 @@ begin : next_state_logic
             if (mem_read || mem_write) begin
                 if (hit0 || hit1)
                     next_state = hit_check_state;
-                else begins
+                else begin
                     if (dirty_i[lru_i] == 1 && valid_i[lru_i] == 1)
                         next_state = write_back_state;
                     else
@@ -158,7 +158,7 @@ always_ff @(posedge clk)
 begin: next_state_assignment
     /* Assignment of next state on clock edge */
     if (rst)
-        state <= wait_state;
+        state <= hit_check_state;
     else
         state <= next_state;
 end
