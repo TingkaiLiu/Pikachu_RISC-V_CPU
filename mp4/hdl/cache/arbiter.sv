@@ -87,19 +87,9 @@ begin : next_state_logic
             if (mmem_resp)
                 next_state = d_fin_state;
         i_fin_state:
-            if (imem_read)
-                next_state = i_mem_state;
-            else if (dmem_read || dmem_write)
-                next_state = d_mem_state;
-            else
-                next_state = wait_state;
+            next_state = wait_state;
         d_fin_state:
-            if (imem_read)
-                next_state = i_mem_state;
-            else if (dmem_read || dmem_write)
-                next_state = d_mem_state;
-            else
-                next_state = wait_state;
+            next_state = wait_state;
         default: ;
     endcase
 end
