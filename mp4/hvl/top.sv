@@ -30,7 +30,7 @@ bit f;
 rv32i_packet_t wb_pkt;
 assign wb_pkt = dut.cpu.WB.wb_in;
 
-assign rvfi.commit = dut.cpu.load_buffers && (wb_pkt.data.instruction != 32'h00000013); // Set high when a valid instruction is modifying regfile or PC
+assign rvfi.commit = dut.cpu.load_buffers && (wb_pkt.data.instruction != 0); // Set high when a valid instruction is modifying regfile or PC
 assign rvfi.halt = wb_pkt.inst.opcode == op_br && 
                     (wb_pkt.inst.rs1 == wb_pkt.inst.rs2) && 
                     (wb_pkt.data.pc == wb_pkt.data.alu_out);  // Set high when you detect an infinite loop
