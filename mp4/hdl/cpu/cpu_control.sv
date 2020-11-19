@@ -48,7 +48,11 @@ module cpu_control(
 );
 
 // Move the pipeline
-assign load_buffers = inst_mem_resp && (!ex_mem.ctrl.mem || data_mem_resp);
+always_ff @ (posedge clk)
+begin
+    load_buffers <= inst_mem_resp && (!ex_mem.ctrl.mem || data_mem_resp);
+    inst_mem_read <= !load_buffers;
+end
 
 // Buffers
 assign if_id_sel = buffer_load_mux::load_ifid;
@@ -56,11 +60,10 @@ assign id_ex_sel = buffer_load_mux::load_idex;
 assign ex_mem_sel = id_ex.ctrl.ex ? buffer_load_mux::load_exmem : buffer_load_mux::use_old;
 assign mem_wb_sel = ex_mem.ctrl.mem ? buffer_load_mux::load_memwb : buffer_load_mux::use_old;
 
+assign inst_mem_write = 0;
 // IF TODO: use a module to handle control hazard?
 always_comb begin
     pcmux_sel = pcmux::pc_plus4;
-    inst_mem_read = !load_buffers;
-    inst_mem_write = 0;
 
     case (id_ex.inst.opcode)
         op_jal: pcmux_sel = pcmux::alu_out;

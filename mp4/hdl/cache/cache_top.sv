@@ -30,7 +30,9 @@ module cache_top(
 
 // I-Cache - Arbiter
 logic imem_read;
+logic imem_write;
 llc_cacheline imem_rdata;
+llc_cacheline imem_wdata;
 logic imem_resp;
 rv32i_word imem_address;
 // D-Cache - Arbiter
@@ -60,9 +62,9 @@ cache Icache(
     .mem_resp           (inst_mem_resp),
     // Arbiter
     .pmem_read          (imem_read),
-    .pmem_write         (),
+    .pmem_write         (imem_write),
     .pmem_rdata         (imem_rdata),
-    .pmem_wdata         (),
+    .pmem_wdata         (imem_wdata),
     .pmem_resp          (imem_resp),
     .pmem_address       (imem_address)
 );
@@ -84,6 +86,44 @@ cache Dcache(
     .pmem_resp          (dmem_resp),
     .pmem_address       (dmem_address)
 );
+
+// cache Icache(
+//     .clk                    (clk),
+
+//     .mem_address            (inst_mem_address),
+//     .mem_byte_enable_cpu    (inst_mem_byte_enable),
+//     .mem_wdata_cpu          (inst_mem_wdata),
+//     .mem_rdata_cpu          (inst_mem_rdata),
+//     .mem_read               (inst_mem_read),
+//     .mem_write              (inst_mem_write),
+//     .mem_resp               (inst_mem_resp),
+
+//     .pmem_read              (imem_read),
+//     .pmem_write             (imem_write),
+//     .pmem_rdata             (imem_rdata),
+//     .pmem_wdata             (imem_wdata),
+//     .pmem_resp              (imem_resp),
+//     .pmem_address           (imem_address)
+// );
+// cache Dcache(
+//     .clk                    (clk),
+
+//     .mem_address            (data_mem_address),
+//     .mem_byte_enable_cpu    (data_mem_byte_enable),
+//     .mem_wdata_cpu          (data_mem_wdata),
+//     .mem_rdata_cpu          (data_mem_rdata),
+//     .mem_read               (data_mem_read),
+//     .mem_write              (data_mem_write),
+//     .mem_resp               (data_mem_resp),
+
+//     .pmem_read              (dmem_read),
+//     .pmem_write             (dmem_write),
+//     .pmem_rdata             (dmem_rdata),
+//     .pmem_wdata             (dmem_wdata),
+//     .pmem_resp              (dmem_resp),
+//     .pmem_address           (dmem_address)
+// );
+
 arbiter arbiter(.*);
 cacheline_adaptor cacheline_adaptor(
     .clk,

@@ -54,11 +54,13 @@ begin : state_actions
     case (state)
         wait_state: ;
         i_mem_state:
-            mmem_read = imem_read;
+            mmem_read = 1'b1;
         d_mem_state:
         begin
-            mmem_read = dmem_read;
-            mmem_write = dmem_write;
+            if (dmem_read)
+                mmem_read = 1'b1;
+            else
+                mmem_write = 1'b1;
             mmem_address = dmem_address;
         end
         i_fin_state:
