@@ -28,9 +28,9 @@ bit f;
 // This section not required until CP2
 
 rv32i_packet_t wb_pkt;
-assign wb_pkt = dut.cpu0.WB0.wb_in;
+assign wb_pkt = dut.cpu.WB.wb_in;
 
-assign rvfi.commit = dut.cpu0.load_buffers && (wb_pkt.data.instruction != 32'h00000013); // Set high when a valid instruction is modifying regfile or PC
+assign rvfi.commit = dut.cpu.load_buffers && (wb_pkt.data.instruction != 0); // Set high when a valid instruction is modifying regfile or PC
 assign rvfi.halt = wb_pkt.inst.opcode == op_br && 
                     (wb_pkt.inst.rs1 == wb_pkt.inst.rs2) && 
                     (wb_pkt.data.pc == wb_pkt.data.alu_out);  // Set high when you detect an infinite loop
@@ -73,7 +73,7 @@ assign rvfi.rs1_rdata = wb_pkt.data.rs1_out;
 assign rvfi.rs2_rdata = wb_pkt.data.rs2_out;
 assign rvfi.load_regfile = wb_pkt.ctrl.load_regfile;
 assign rvfi.rd_addr = wb_pkt.inst.rd;
-assign rvfi.rd_wdata = dut.cpu0.WB0.regfilemux_out;
+assign rvfi.rd_wdata = dut.cpu.WB.regfilemux_out;
 assign rvfi.pc_rdata = wb_pkt.data.pc;
 assign rvfi.pc_wdata = (wb_pkt.inst.opcode == op_jal 
                      || wb_pkt.inst.opcode == op_jalr
@@ -107,11 +107,14 @@ dcache signals:
 
 Please refer to tb_itf.sv for more information.
 */
-
+assign itf.inst_read = dut.cache_top.Icache.mem_read;
+assign itf.inst_addr = dut.cache_top.Icache.mem_address;
+assign itf.inst_resp = dut.cache_top.Icache.mem_resp;
+assign itf.inst_rdata = dut.cache_top.Icache.mem_rdata;
 /*********************** End Shadow Memory Assignments ***********************/
 
 // Set this to the proper value
-assign itf.registers = dut.cpu0.regfile0.data;
+assign itf.registers = dut.cpu.regfile.data;
 
 /*********************** Instantiate your design here ************************/
 /*
@@ -136,21 +139,12 @@ mp4 dut(
     .rst                    (itf.rst),
 
     // Memory
-    .inst_mem_address       (itf.inst_addr),
-    .inst_mem_read          (itf.inst_read),
-    .inst_mem_write         (), // hang
-    .inst_mem_byte_enable   (), // hang
-    .inst_mem_rdata         (itf.inst_rdata),
-    .inst_mem_wdata         (), // hang
-    .inst_mem_resp          (itf.inst_resp),
-
-    .data_mem_address       (itf.data_addr),
-    .data_mem_read          (itf.data_read),
-    .data_mem_write         (itf.data_write),
-    .data_mem_byte_enable   (itf.data_mbe),
-    .data_mem_rdata         (itf.data_rdata),
-    .data_mem_wdata         (itf.data_wdata),
-    .data_mem_resp          (itf.data_resp)
+    .mem_read               (itf.mem_read),
+    .mem_write              (itf.mem_write),
+    .mem_wdata              (itf.mem_wdata),
+    .mem_rdata              (itf.mem_rdata),
+    .mem_address            (itf.mem_addr),
+    .mem_resp               (itf.mem_resp)
 );
 
 /***************************** End Instantiation *****************************/
