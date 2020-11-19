@@ -92,7 +92,6 @@ task automatic memread(input logic [ADDRLEN-1:0] addr);
             // done, so the writer must be careful about this point
             repeat (delay) @(itf.mcb);
             for (int i = 0; i < BURST_LEN; ++i) begin
-                $display("reading");
                 itf.mcb.rdata <= _mem[_read_loc][BURST_WIDTH*i +: BURST_WIDTH];
                 itf.mcb.resp <= 1'b1;
                 @(itf.mcb);
