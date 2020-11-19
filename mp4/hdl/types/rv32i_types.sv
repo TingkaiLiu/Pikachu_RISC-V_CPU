@@ -13,6 +13,7 @@ import regfilemux::*;
 typedef logic [31:0] rv32i_word;
 typedef logic [4:0] rv32i_reg;
 typedef logic [3:0] rv32i_mem_wmask;
+typedef logic [255:0] llc_cacheline;
 
 typedef enum bit [6:0] {
     op_lui   = 7'b0110111, //load upper immediate (U type)

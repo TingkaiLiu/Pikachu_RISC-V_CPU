@@ -1,7 +1,3 @@
-package cache_types;
-typedef logic [255:0] llc_cacheline;
-endpackage: cache_types
-
 package wemux;
 typedef enum bit[1:0] { 
     zeros = 2'b00
