@@ -42,8 +42,9 @@ always_comb begin : REGFILEMUX
         regfilemux::alu_out: regfilemux_out = alu_out;
         regfilemux::br_en: regfilemux_out = br_en;
         regfilemux::u_imm: regfilemux_out = u_imm;
-        regfilemux::lw: regfilemux_out = mdrreg_out;
         regfilemux::pc_plus4: regfilemux_out = pc_out + 4;
+
+        regfilemux::lw: regfilemux_out = mdrreg_out;
         regfilemux::lb: begin
             case (wb_in.data.rmask)
                 4'b0001: regfilemux_out = {{24{mdrreg_out[7]}}, mdrreg_out[7:0]};
