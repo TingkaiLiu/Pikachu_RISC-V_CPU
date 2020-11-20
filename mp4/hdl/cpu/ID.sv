@@ -18,7 +18,7 @@ module ID
     input rv32i_word alu_out,
     input rv32i_word data_mem_rdata,
     input logic [3:0] rmask,
-    input logic [31:0] regfile_in;
+    input logic [31:0] regfile_in,
     
     // Connection with control rom 
     output rv32i_opcode opcode, 
