@@ -64,6 +64,7 @@ package buffer_load_mux;
 typedef enum bit [2:0] { 
     // keep the value from previous buffer
     use_old = 3'b000
+    ,load_invalid = 3'b001 // Load an invalid instruction for stalling (data hazard)
     // update the correspoding entries of previous buffer
     ,load_ifid = 3'b010
     ,load_idex = 3'b011
