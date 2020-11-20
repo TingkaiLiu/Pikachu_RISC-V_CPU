@@ -48,4 +48,7 @@
         add "valid" field
             set in in EX
         add calculation for data hazard mux
+            Need forward input: 
+                only ID: if the data to read is currently at WB/EX/MEM
+                when the data is ready and move the pipeline is handled by control
         
