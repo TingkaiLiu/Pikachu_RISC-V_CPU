@@ -30,7 +30,7 @@ module cpu(
 // Internal connections
 // Buffers loads
 logic load_buffers;
-logic laod_pc;
+logic load_pc;
 buffer_load_mux::buffer_sel_t if_id_sel;
 buffer_load_mux::buffer_sel_t id_ex_sel;
 buffer_load_mux::buffer_sel_t ex_mem_sel;

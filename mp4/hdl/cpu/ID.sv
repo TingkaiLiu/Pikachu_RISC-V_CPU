@@ -17,7 +17,7 @@ module ID
     input logic br_en,
     input rv32i_word alu_out,
     input rv32i_word data_mem_rdata,
-    input logic [31:0] regfile_in;
+    input logic [31:0] regfile_in,
     
     // Connection with control rom 
     output rv32i_opcode opcode, 
@@ -61,12 +61,11 @@ assign id_out.ctrl = ctrl;
 assign rs1 = id_out.inst.rs1;
 assign rs2 = id_out.inst.rs2;
 
-assign id_out.data.rs1_out = reg_a;
-assign id_out.data.rs2_out = reg_b;
-
-
 // Handle data hazard: nested if for priority handling
 always_comb begin    
+    id_out.data.rs1_out = reg_a;
+    id_out.data.rs2_out = reg_b;
+    
     // rs1
     if (rs1) begin // won't forward for x0
         // From EX
@@ -75,12 +74,12 @@ always_comb begin
                 regfilemux::alu_out: id_out.data.rs1_out = alu_out;
                 regfilemux::br_en: id_out.data.rs1_out = {31'b0, br_en};
                 regfilemux::u_imm: id_out.data.rs1_out = ex_in.inst.u_imm;
-                regfilemux::pc_plus4: id_out.data.rs1_out = ex.data.pc + 4;
+                regfilemux::pc_plus4: id_out.data.rs1_out = ex_in.data.pc + 4;
             endcase
         end
         // From MEM
         else if (mem_in.valid && mem_in.ctrl.wb && rs1 == mem_in.inst.rd) begin
-            case (mem_in.ctrl.regfilemux_sel) begin
+            case (mem_in.ctrl.regfilemux_sel)
                 regfilemux::lb: begin
                     case (mem_in.data.rmask)
                         4'b0001: id_out.data.rs1_out = {{24{data_mem_rdata[7]}}, data_mem_rdata[7:0]};
@@ -113,7 +112,7 @@ always_comb begin
                         default: $fatal("ID: Bad rmask of lhu!\n");
                     endcase
                 end
-            end
+            endcase
         end
         // From WB
         else if (wb_in.valid && wb_in.ctrl.wb && rs1 == wb_in.inst.rd) begin
@@ -129,12 +128,12 @@ always_comb begin
                 regfilemux::alu_out: id_out.data.rs2_out = alu_out;
                 regfilemux::br_en: id_out.data.rs2_out = {31'b0, br_en};
                 regfilemux::u_imm: id_out.data.rs2_out = ex_in.inst.u_imm;
-                regfilemux::pc_plus4: id_out.data.rs2_out = ex.data.pc + 4;
+                regfilemux::pc_plus4: id_out.data.rs2_out = ex_in.data.pc + 4;
             endcase
         end
         // From MEM
         else if (mem_in.valid && mem_in.ctrl.wb && rs2 == mem_in.inst.rd) begin
-            case (mem_in.ctrl.regfilemux_sel) begin
+            case (mem_in.ctrl.regfilemux_sel) 
                 regfilemux::lb: begin
                     case (mem_in.data.rmask)
                         4'b0001: id_out.data.rs2_out = {{24{data_mem_rdata[7]}}, data_mem_rdata[7:0]};
@@ -167,7 +166,7 @@ always_comb begin
                         default: $fatal("ID: Bad rmask of lhu!\n");
                     endcase
                 end
-            end
+            endcase
         end
         // From WB
         else if (wb_in.valid && wb_in.ctrl.wb && rs2 == wb_in.inst.rd) begin
