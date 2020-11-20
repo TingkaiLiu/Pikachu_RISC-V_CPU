@@ -8,6 +8,9 @@ module MEM
     input rv32i_ctrl_packet_t ctrl, // won't be used
     input rv32i_packet_t mem_in,
     output rv32i_packet_t mem_out,
+
+    output logic [3:0] rmask,
+
     // Data Cache
     output rv32i_word data_mem_address,
     output rv32i_word data_mem_wdata,
@@ -25,6 +28,8 @@ assign mem_out.data.mem_wdata = data_mem_wdata;
 
 logic [1:0] mem_offset; // The low 2 bit of the address
 assign mem_offset = mem_in.data.alu_out[1:0];
+
+assign rmask = mem_out.data.rmask;
 
 always_comb begin
     data_mem_byte_enable = 0;

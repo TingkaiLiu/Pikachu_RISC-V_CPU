@@ -30,11 +30,13 @@ module cpu(
 // Internal connections
 // Buffers loads
 logic load_buffers;
+logic load_pc;
 buffer_load_mux::buffer_sel_t if_id_sel;
 buffer_load_mux::buffer_sel_t id_ex_sel;
 buffer_load_mux::buffer_sel_t ex_mem_sel;
 buffer_load_mux::buffer_sel_t mem_wb_sel;
 
+rv32i_packet_t if_id;
 rv32i_packet_t id_ex;
 rv32i_packet_t ex_mem;
 rv32i_packet_t mem_wb;
@@ -42,6 +44,7 @@ rv32i_packet_t mem_wb;
 logic br_en;
 rv32i_word alu_out;
 logic correct_pc_prediction;
+logic [3:0] rmask;
 
 pcmux::pcmux_sel_t pcmux_sel;
 rv32i_ctrl_packet_t ex_ctrl;
@@ -66,16 +69,17 @@ cpu_control control(.*);
 
 control_rom control_rom0(.*);
 
+assign id_in = if_id;
 assign ex_in = id_ex;
 assign mem_in = ex_mem;
 assign wb_in = mem_wb;
 
 // Datapath 
-IF IF(.*, .load_pc(load_buffers));
+IF IF(.*);
 
 buffer IF_ID(
-    .*, .load(load_buffers), .buffer_sel(if_id_sel),
-    .packet_in_old(0), .packet_in_new(if_out), .packet_out(id_in)
+    .*, .load(load_pc), .buffer_sel(if_id_sel),
+    .packet_in_old(0), .packet_in_new(if_out), .packet_out(if_id)
 );
 
 ID ID(.*);
