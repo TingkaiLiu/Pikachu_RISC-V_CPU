@@ -90,7 +90,7 @@ cmp CMP(
 
 always_comb begin : ALUMUXES
 
-   cmpmux_out = rs2_out;
+    cmpmux_out = rs2_out;
 	alumux1_out = rs1_out;
 	alumux2_out = i_imm;
 
@@ -100,31 +100,19 @@ always_comb begin : ALUMUXES
         default: `BAD_MUX_SEL;
     endcase
 
-    unique case(ctrl.alumux1_fw)
-        forward::from_idex:
-            unique case(ctrl.alumux1_sel)
-                alumux::rs1_out: alumux1_out = rs1_out;
-                alumux::pc_out: alumux1_out = pc_out;
-            default: `BAD_MUX_SEL;
-            endcase
-        forward::from_exmem: alumux1_out = from_exmem;
-        forward::from_memwb: alumux1_out = from_memwb;
-        default: `BAD_MUX_SEL;
+    unique case(ctrl.alumux1_sel)
+        alumux::rs1_out: alumux1_out = rs1_out;
+        alumux::pc_out: alumux1_out = pc_out;
+    default: `BAD_MUX_SEL;
     endcase
 
-    unique case(ctrl.alumux2_fw)
-        forward::from_idex:
-            unique case(ctrl.alumux2_sel)
-                alumux::i_imm: alumux2_out = i_imm;
-                alumux::u_imm: alumux2_out = u_imm;
-                alumux::b_imm: alumux2_out = b_imm;
-                alumux::s_imm: alumux2_out = s_imm;
-                alumux::j_imm: alumux2_out = j_imm;
-                alumux::rs2_out: alumux2_out = rs2_out;
-                default: `BAD_MUX_SEL;
-            endcase
-        forward::from_exmem: alumux2_out = from_exmem;
-        forward::from_memwb: alumux2_out = from_memwb;
+    unique case(ctrl.alumux2_sel)
+        alumux::i_imm: alumux2_out = i_imm;
+        alumux::u_imm: alumux2_out = u_imm;
+        alumux::b_imm: alumux2_out = b_imm;
+        alumux::s_imm: alumux2_out = s_imm;
+        alumux::j_imm: alumux2_out = j_imm;
+        alumux::rs2_out: alumux2_out = rs2_out;
         default: `BAD_MUX_SEL;
     endcase
     

@@ -63,9 +63,6 @@ typedef struct packed {
     logic wb; // Indicate whether WB stage is needed. Same value as load_regfile...
     regfilemux::regfilemux_sel_t regfilemux_sel;
     logic load_regfile;
-    // FWU
-    forward::forward_t alumux1_fw;
-    forward::forward_t alumux2_fw;
 } rv32i_ctrl_packet_t;
 
 // The packet passed in the pipeline and stored by the buffers
