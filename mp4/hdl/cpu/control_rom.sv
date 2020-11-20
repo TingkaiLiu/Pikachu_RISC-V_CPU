@@ -38,9 +38,6 @@ function void set_defaults();
     ctrl.wb = 0;
     ctrl.regfilemux_sel = regfilemux::alu_out;
     ctrl.load_regfile = 0;
-    // FWU TODO:
-    ctrl.alumux1_fw = forward::from_idex;
-    ctrl.alumux2_fw = forward::from_idex;
 
 endfunction
 
