@@ -41,6 +41,7 @@ rv32i_packet_t mem_wb;
 
 logic br_en;
 rv32i_word alu_out;
+logic correct_pc_prediction;
 
 pcmux::pcmux_sel_t pcmux_sel;
 rv32i_ctrl_packet_t ex_ctrl;
@@ -70,16 +71,16 @@ assign mem_in = ex_mem;
 assign wb_in = mem_wb;
 
 // Datapath 
-IF IF0(.*, .load_pc(load_buffers));
+IF IF(.*, .load_pc(load_buffers));
 
 buffer IF_ID(
     .*, .load(load_buffers), .buffer_sel(if_id_sel),
     .packet_in_old(0), .packet_in_new(if_out), .packet_out(id_in)
 );
 
-ID ID0(.*);
+ID ID(.*);
 
-regfile regfile0(
+regfile regfile(
     .*, .load(load_regfile), .in(regfile_in),
     .src_a(rs1), .src_b(rs2)
 );
@@ -89,21 +90,21 @@ buffer ID_EX(
     .packet_in_old(id_in), .packet_in_new(id_out), .packet_out(id_ex)
 );
 
-EX EX0(.*, .ctrl(ex_ctrl), .from_exmem(0), .from_memwb(0)); // TODO:
+EX EX(.*, .ctrl(ex_ctrl), .from_exmem(0), .from_memwb(0)); // TODO:
 
 buffer EX_MEM(
     .*, .load(load_buffers), .buffer_sel(ex_mem_sel),
     .packet_in_old(ex_in), .packet_in_new(ex_out), .packet_out(ex_mem)
 );
 
-MEM MEM0(.*, .ctrl(mem_ctrl));
+MEM MEM(.*, .ctrl(mem_ctrl));
 
 buffer MEM_WB(
     .*, .load(load_buffers), .buffer_sel(mem_wb_sel),
     .packet_in_old(mem_in), .packet_in_new(mem_out), .packet_out(mem_wb)
 );
 
-WB WB0(.*, .ctrl(wb_ctrl));
+WB WB(.*, .ctrl(wb_ctrl));
 
 
 endmodule : cpu

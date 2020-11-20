@@ -20,7 +20,7 @@ rv32i_word regfilemux_out;
 
 assign regfile_in = regfilemux_out;
 assign dest = wb_in.inst.rd;
-assign load_regfile = ctrl.load_regfile;
+assign load_regfile = wb_in.valid && ctrl.load_regfile;
 
 rv32i_word alu_out;
 rv32i_word br_en;

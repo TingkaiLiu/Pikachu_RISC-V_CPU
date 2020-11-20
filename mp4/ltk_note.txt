@@ -31,9 +31,21 @@
     Bug2:
         Invalid data read from D memory
         Forgot to mask the low 2 bits for mem_addr
-        I-cache access is always 4 byte allign so no need for that
+        I-cache access is always 4 byte align so no need for that
     
     Bug3:
         When EX indicates halt, the WB for previous inst may not finish
         The way for detecting halt may need to change
+
+2020.11.19
+    For one-cycle hit cache, set the inst_mem_read to be always 1
+
+2020.11.20
+    To do: 
+        add field for next PC and assign in IF. Check it at EX
+            correct_pc_prediction won't cause problem at code start 
+                since it has default value to be 1
+        add "valid" field
+            set in in EX
+        add calculation for data hazard mux
         
