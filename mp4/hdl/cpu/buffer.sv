@@ -27,6 +27,7 @@ always_comb begin
 
     case (buffer_sel)
         buffer_load_mux::use_old: ;
+        buffer_load_mux::load_invalid: packet_in.valid = 1'b0;
         buffer_load_mux::load_ifid: begin
             packet_in.valid = packet_in_new.valid;
             packet_in.data.pc = packet_in_new.data.pc;

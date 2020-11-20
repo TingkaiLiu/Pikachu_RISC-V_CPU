@@ -16,13 +16,14 @@ module cpu_control(
     
     // Buffers loads
     output logic load_buffers, // load all buffer, which is equivilant to move the pipeline
+    output logic load_pc, // sepecial for pc and if_id for stalling
     output buffer_load_mux::buffer_sel_t if_id_sel, // constant output, but assigned by control for consistency
     output buffer_load_mux::buffer_sel_t id_ex_sel, // constant output
     output buffer_load_mux::buffer_sel_t ex_mem_sel,
     output buffer_load_mux::buffer_sel_t mem_wb_sel,
 
     // Get control from buffers
-    // input rv32i_packet_t if_id,
+    input rv32i_packet_t if_id,
     input rv32i_packet_t id_ex,
     input rv32i_packet_t ex_mem,
     input rv32i_packet_t mem_wb,
@@ -47,14 +48,39 @@ module cpu_control(
     input logic data_mem_resp
 );
 
+// Fast decode for rs1 ans rs2
+logic [4:0] rs1, rs2;
+assign rs1 = if_id.data.instruction[19:15];
+assign rs2 = if_id.data.instruction[24:20];
+
 // Move the pipeline
 assign load_buffers = inst_mem_resp && (!ex_mem.ctrl.mem || data_mem_resp);
+assign load_pc = load_buffers;
 
-// Buffers
+// Buffer select
 assign if_id_sel = buffer_load_mux::load_ifid;
 assign id_ex_sel = buffer_load_mux::load_idex;
 assign ex_mem_sel = id_ex.ctrl.ex ? buffer_load_mux::load_exmem : buffer_load_mux::use_old;
 assign mem_wb_sel = (ex_mem.valid && ex_mem.ctrl.mem) ? buffer_load_mux::load_memwb : buffer_load_mux::use_old;
+
+// Check for data hazard and stalling: one of the sr is the dr for previous ld
+always_comb begin
+    // rs1
+    if (rs1) begin // won't forward for x0
+        if (id_ex.valid && id_ex.ctrl.wb && id_ex.ctrl.mem && rs1 == id_ex.inst.rd) begin
+            id_ex_sel = buffer_load_mux::load_invalid;
+            load_pc = 0;
+        end
+    end
+
+    // rs2
+    if (rs2) begin // won't forward for x0
+        if (id_ex.valid && id_ex.ctrl.wb && id_ex.ctrl.mem && rs2 == id_ex.inst.rd) begin
+            id_ex_sel = buffer_load_mux::load_invalid;
+            load_pc = 0;
+        end
+    end
+end
 
 // IF
 assign inst_mem_read = 1'b1;
