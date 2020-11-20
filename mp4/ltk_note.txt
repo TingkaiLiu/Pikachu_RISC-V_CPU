@@ -62,4 +62,7 @@
             dr
             xx
             sr
+    Bug4:
+        Stalling didn't get the forwarded value
+        Forgot the forward setting (only) for lw.................
         

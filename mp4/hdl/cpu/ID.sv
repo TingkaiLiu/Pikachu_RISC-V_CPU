@@ -86,6 +86,7 @@ always_comb begin
                 regfilemux::u_imm: id_out.data.rs1_out = mem_in.inst.u_imm;
                 regfilemux::pc_plus4: id_out.data.rs1_out = mem_in.data.pc + 4;
                 
+                regfilemux::lw: id_out.data.rs1_out = data_mem_rdata;
                 regfilemux::lb: begin
                     case (rmask)
                         4'b0001: id_out.data.rs1_out = {{24{data_mem_rdata[7]}}, data_mem_rdata[7:0]};
@@ -145,6 +146,7 @@ always_comb begin
                 regfilemux::u_imm: id_out.data.rs2_out = mem_in.inst.u_imm;
                 regfilemux::pc_plus4: id_out.data.rs2_out = mem_in.data.pc + 4;
                 
+                regfilemux::lw: id_out.data.rs2_out = data_mem_rdata;
                 regfilemux::lb: begin
                     case (rmask)
                         4'b0001: id_out.data.rs2_out = {{24{data_mem_rdata[7]}}, data_mem_rdata[7:0]};
