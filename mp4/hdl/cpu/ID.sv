@@ -87,7 +87,7 @@ always_comb begin
                         4'b0010: id_out.data.rs1_out = {{24{data_mem_rdata[15]}}, data_mem_rdata[15:8]};
                         4'b0100: id_out.data.rs1_out = {{24{data_mem_rdata[23]}}, data_mem_rdata[23:16]};
                         4'b1000: id_out.data.rs1_out = {{24{data_mem_rdata[31]}}, data_mem_rdata[31:24]};
-                        default: $fatal("ID: Bad rmask of lb!\n");
+                        // default: $fatal("ID: Bad rmask of lb! %d\n", rmask);
                     endcase
                 end
                 regfilemux::lbu: begin
@@ -96,21 +96,21 @@ always_comb begin
                         4'b0010: id_out.data.rs1_out = {24'b0, data_mem_rdata[15:8]};
                         4'b0100: id_out.data.rs1_out = {24'b0, data_mem_rdata[23:16]};
                         4'b1000: id_out.data.rs1_out = {24'b0, data_mem_rdata[31:24]};
-                        default: $fatal("ID: Bad rmask of lbu!\n");
+                        // default: $fatal("ID: Bad rmask of lbu!\n");
                     endcase
                 end
                 regfilemux::lh: begin
                     case (rmask)
                         4'b0011: id_out.data.rs1_out = {{16{data_mem_rdata[15]}}, data_mem_rdata[15:0]};
                         4'b1100: id_out.data.rs1_out = {{16{data_mem_rdata[31]}}, data_mem_rdata[31:16]};
-                        default: $fatal("ID: Bad rmask of lh!\n");
+                        // default: $fatal("ID: Bad rmask of lh!\n");
                     endcase
                 end
                 regfilemux::lhu: begin
                     case(rmask)
                         4'b0011: id_out.data.rs1_out = {16'b0, data_mem_rdata[15:0]};
                         4'b1100: id_out.data.rs1_out = {16'b0, data_mem_rdata[31:16]};
-                        default: $fatal("ID: Bad rmask of lhu!\n");
+                        // default: $fatal("ID: Bad rmask of lhu!\n");
                     endcase
                 end
             endcase
@@ -141,7 +141,7 @@ always_comb begin
                         4'b0010: id_out.data.rs2_out = {{24{data_mem_rdata[15]}}, data_mem_rdata[15:8]};
                         4'b0100: id_out.data.rs2_out = {{24{data_mem_rdata[23]}}, data_mem_rdata[23:16]};
                         4'b1000: id_out.data.rs2_out = {{24{data_mem_rdata[31]}}, data_mem_rdata[31:24]};
-                        default: $fatal("ID: Bad rmask of lb!\n");
+                        // default: $fatal("ID: Bad rmask of lb! %d\n", rmask);
                     endcase
                 end
                 regfilemux::lbu: begin
@@ -150,21 +150,21 @@ always_comb begin
                         4'b0010: id_out.data.rs2_out = {24'b0, data_mem_rdata[15:8]};
                         4'b0100: id_out.data.rs2_out = {24'b0, data_mem_rdata[23:16]};
                         4'b1000: id_out.data.rs2_out = {24'b0, data_mem_rdata[31:24]};
-                        default: $fatal("ID: Bad rmask of lbu!\n");
+                        // default: $fatal("ID: Bad rmask of lbu!\n");
                     endcase
                 end
                 regfilemux::lh: begin
                     case (rmask)
                         4'b0011: id_out.data.rs2_out = {{16{data_mem_rdata[15]}}, data_mem_rdata[15:0]};
                         4'b1100: id_out.data.rs2_out = {{16{data_mem_rdata[31]}}, data_mem_rdata[31:16]};
-                        default: $fatal("ID: Bad rmask of lh!\n");
+                        // default: $fatal("ID: Bad rmask of lh!\n");
                     endcase
                 end
                 regfilemux::lhu: begin
                     case(rmask)
                         4'b0011: id_out.data.rs2_out = {16'b0, data_mem_rdata[15:0]};
                         4'b1100: id_out.data.rs2_out = {16'b0, data_mem_rdata[31:16]};
-                        default: $fatal("ID: Bad rmask of lhu!\n");
+                        // default: $fatal("ID: Bad rmask of lhu!\n");
                     endcase
                 end
             endcase
