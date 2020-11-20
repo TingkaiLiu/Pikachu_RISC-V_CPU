@@ -28,10 +28,13 @@ always_comb begin
     case (buffer_sel)
         buffer_load_mux::use_old: ;
         buffer_load_mux::load_ifid: begin
+            packet_in.valid = packet_in_new.valid;
             packet_in.data.pc = packet_in_new.data.pc;
             packet_in.data.instruction = packet_in_new.data.instruction;
+            packet_in.data.next_pc = packet_in_new.data.next_pc;
         end
         buffer_load_mux::load_idex: begin
+            packet_in.valid = packet_in_new.valid;
             packet_in.inst = packet_in_new.inst;
             packet_in.ctrl = packet_in_new.ctrl;
             packet_in.data.rs1_out = packet_in_new.data.rs1_out;
@@ -40,6 +43,8 @@ always_comb begin
         buffer_load_mux::load_exmem: begin
             packet_in.data.alu_out = packet_in_new.data.alu_out;
             packet_in.data.br_en = packet_in_new.data.br_en;
+            packet_in.data.correct_pc_prediction = packet_in_new.data.correct_pc_prediction;
+            packet_in.data.next_pc = packet_in_new.data.next_pc;
         end
         buffer_load_mux::load_memwb: begin
             packet_in.data.mdrreg_out = packet_in_new.data.mdrreg_out;

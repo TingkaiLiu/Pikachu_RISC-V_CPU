@@ -14,6 +14,7 @@ module EX
     // Spcial output
     output logic br_en,
     output rv32i_word alu_out,
+    output logic correct_pc_prediction,
     
     // From other stages
     input rv32i_word from_exmem,
@@ -26,6 +27,34 @@ rv32i_word cmpmux_out;
 
 assign ex_out.data.alu_out = alu_out;
 assign ex_out.data.br_en = br_en;
+assign ex_out.data.correct_pc_prediction = correct_pc_prediction;
+
+// Handle control hazard
+always_comb begin
+    correct_pc_prediction = 1;
+    ex_out.data.next_pc = ex_in.data.next_pc;
+
+    if (en_in.valid) begin // For invalid inst, won't let it affect others
+        case (ex_in.inst.opcode)
+            op_jal: begin
+                correct_pc_prediction = (alu_out == ex_in.data.next_pc);
+                ex_out.data.next_pc = alu_out;
+            end
+            op_jalr: begin
+                correct_pc_prediction = ({alu_out[31:1], 1'b0} == ex_in.data.next_pc);
+                ex_out.data.next_pc = {alu_out[31:1], 1'b0};
+            end 
+            op_br: begin
+                if (br_en) begin
+                    correct_pc_prediction = (alu_out == ex_in.data.next_pc);
+                    ex_out.data.next_pc = alu_out;
+                end
+            end 
+            default: ;
+        endcase
+    end
+    
+end
 
 rv32i_word rs1_out;
 rv32i_word rs2_out;

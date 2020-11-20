@@ -30,7 +30,7 @@ bit f;
 rv32i_packet_t wb_pkt;
 assign wb_pkt = dut.cpu.WB.wb_in;
 
-assign rvfi.commit = dut.cpu.load_buffers && (wb_pkt.data.instruction != 0); // Set high when a valid instruction is modifying regfile or PC
+assign rvfi.commit = dut.cpu.load_buffers && wb_pkt.valid; // Set high when a valid instruction is modifying regfile or PC
 assign rvfi.halt = wb_pkt.inst.opcode == op_br && 
                     (wb_pkt.inst.rs1 == wb_pkt.inst.rs2) && 
                     (wb_pkt.data.pc == wb_pkt.data.alu_out);  // Set high when you detect an infinite loop
@@ -71,13 +71,11 @@ assign rvfi.rs1_addr = wb_pkt.inst.rs1;
 assign rvfi.rs2_addr = wb_pkt.inst.rs2;
 assign rvfi.rs1_rdata = wb_pkt.data.rs1_out;
 assign rvfi.rs2_rdata = wb_pkt.data.rs2_out;
-assign rvfi.load_regfile = wb_pkt.ctrl.load_regfile;
+assign rvfi.load_regfile = dut.cpu.load_regfile;
 assign rvfi.rd_addr = wb_pkt.inst.rd;
 assign rvfi.rd_wdata = dut.cpu.WB.regfilemux_out;
 assign rvfi.pc_rdata = wb_pkt.data.pc;
-assign rvfi.pc_wdata = (wb_pkt.inst.opcode == op_jal 
-                     || wb_pkt.inst.opcode == op_jalr
-                     || (wb_pkt.inst.opcode == op_br && wb_pkt.data.br_en)) ? wb_pkt.data.alu_out : (wb_pkt.data.pc + 4);
+assign rvfi.pc_wdata = wb_pkt.data.next_pc;
 assign rvfi.mem_addr = wb_pkt.data.mem_addr;
 assign rvfi.mem_rmask = wb_pkt.data.rmask;
 assign rvfi.mem_wmask = wb_pkt.data.wmask;
