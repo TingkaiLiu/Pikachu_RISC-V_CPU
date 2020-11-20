@@ -9,6 +9,8 @@ module ID
     input rv32i_packet_t id_in,
     output rv32i_packet_t id_out, // contains only the new values from this stage
 
+    input logic correct_pc_prediction,
+    
     // Connection with control rom 
     output rv32i_opcode opcode, 
     output logic [2:0] funct3, 
@@ -21,6 +23,9 @@ module ID
     input rv32i_word reg_a,
     input rv32i_word reg_b
 );
+
+// For control hazard, see whether the current inst is valid
+assign id_out.valid = correct_pc_prediction && id_in.valid;
 
 // Decode the instruction
 logic [31:0] data;

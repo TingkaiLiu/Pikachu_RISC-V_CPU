@@ -54,20 +54,24 @@ assign load_buffers = inst_mem_resp && (!ex_mem.ctrl.mem || data_mem_resp);
 assign if_id_sel = buffer_load_mux::load_ifid;
 assign id_ex_sel = buffer_load_mux::load_idex;
 assign ex_mem_sel = id_ex.ctrl.ex ? buffer_load_mux::load_exmem : buffer_load_mux::use_old;
-assign mem_wb_sel = ex_mem.ctrl.mem ? buffer_load_mux::load_memwb : buffer_load_mux::use_old;
+assign mem_wb_sel = (ex_mem.valid && ex_mem.ctrl.mem) ? buffer_load_mux::load_memwb : buffer_load_mux::use_old;
 
+// IF
 assign inst_mem_read = 1'b1;
 assign inst_mem_write = 1'b0;
-// IF TODO: use a module to handle control hazard?
+
 always_comb begin
     pcmux_sel = pcmux::pc_plus4;
 
-    case (id_ex.inst.opcode)
-        op_jal: pcmux_sel = pcmux::alu_out;
-        op_jalr: pcmux_sel = pcmux::alu_mod2;
-        op_br: if (br_en) pcmux_sel = pcmux::alu_out;
-        default: ;
-    endcase
+    if (id_ex.valid) begin
+        case (id_ex.inst.opcode)
+            op_jal: pcmux_sel = pcmux::alu_out;
+            op_jalr: pcmux_sel = pcmux::alu_mod2;
+            op_br: if (br_en) pcmux_sel = pcmux::alu_out;
+            default: ;
+        endcase
+    end
+    
 end
 
 // EX
@@ -75,11 +79,11 @@ assign ex_ctrl = id_ex.ctrl;
 
 // MEM
 assign mem_ctrl = ex_mem.ctrl;
-assign data_mem_read = ex_mem.ctrl.data_mem_read;
-assign data_mem_write = ex_mem.ctrl.data_mem_write;
+assign data_mem_read = ex_mem.valid && ex_mem.ctrl.data_mem_read;
+assign data_mem_write = ex_mem.valid && ex_mem.ctrl.data_mem_write;
 
 // WB
 assign wb_ctrl = mem_wb.ctrl;
-
+// valid is handled inside WB
 
 endmodule : cpu_control
