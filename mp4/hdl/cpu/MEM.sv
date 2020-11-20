@@ -29,6 +29,8 @@ assign mem_out.data.mem_wdata = data_mem_wdata;
 logic [1:0] mem_offset; // The low 2 bit of the address
 assign mem_offset = mem_in.data.alu_out[1:0];
 
+assign rmask = mem_out.data.rmask;
+
 always_comb begin
     data_mem_byte_enable = 0;
     mem_out.data.rmask = 0;
