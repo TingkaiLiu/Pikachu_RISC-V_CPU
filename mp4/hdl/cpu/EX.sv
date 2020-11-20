@@ -34,7 +34,7 @@ always_comb begin
     correct_pc_prediction = 1;
     ex_out.data.next_pc = ex_in.data.next_pc;
 
-    if (en_in.valid) begin // For invalid inst, won't let it affect others
+    if (ex_in.valid) begin // For invalid inst, won't let it affect others
         case (ex_in.inst.opcode)
             op_jal: begin
                 correct_pc_prediction = (alu_out == ex_in.data.next_pc);

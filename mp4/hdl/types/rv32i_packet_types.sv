@@ -30,6 +30,7 @@ typedef struct packed {
     // EX
     rv32i_word alu_out;
     logic br_en;
+    logic correct_pc_prediction; // For control hazard
     // MEM
     rv32i_word mdrreg_out;
     logic [3:0] rmask;
@@ -54,7 +55,6 @@ typedef struct packed {
     alumux::alumux2_sel_t alumux2_sel;
     branch_funct3_t cmpop;
     cmpmux::cmpmux_sel_t cmpmux_sel;
-    logic correct_pc_prediction; // For control hazard
     // MEM
     logic mem; // Indicate whether MEM stage is needed. 
     logic data_mem_read;

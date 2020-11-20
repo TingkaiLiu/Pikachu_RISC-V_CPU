@@ -12,7 +12,7 @@ module IF
 
     // From other stages
     input rv32i_word alu_out,
-    logic correct_pc_prediction,
+    input logic correct_pc_prediction,
 
     // I-cache
     output rv32i_word inst_mem_address,
