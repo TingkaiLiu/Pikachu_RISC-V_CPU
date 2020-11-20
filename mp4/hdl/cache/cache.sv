@@ -1,7 +1,6 @@
 /* MODIFY. Your cache design. It contains the cache
 controller, cache datapath, and bus adapter. */
 import rv32i_types::*;
-import cache_types::*;
 
 module cache #(
     parameter s_offset = 5,
@@ -67,18 +66,13 @@ cache_control control
     .dirty_i(dirty_d2c),
     .cmp_i(cmp_d2c),
     // to datapath
-    .data_read,
     .dimux_sel,
     .domux_sel,
     .wemux_sel,
     .addrmux_sel,
-    .lru_read,
     .lru_load,
-    .valid_read,
     .valid_load,
-    .dirty_read,
     .dirty_load,
-    .tag_read,
     .tag_load,
     .lru_o(lru_c2d),
     .valid_o(valid_c2d),
@@ -98,18 +92,13 @@ cache_datapath datapath
     .clk,
     .rst,
     // from controller
-    .data_read,
     .dimux_sel,
     .domux_sel,
     .wemux_sel,
     .addrmux_sel,
-    .lru_read,
     .lru_load,
-    .valid_read,
     .valid_load,
-    .dirty_read,
     .dirty_load,
-    .tag_read,
     .tag_load,
     .lru_i(lru_c2d),
     .valid_i(valid_c2d),

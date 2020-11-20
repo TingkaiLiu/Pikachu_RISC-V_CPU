@@ -23,12 +23,14 @@ typedef struct packed {
     // IF
     rv32i_word pc;
     rv32i_word instruction; // raw instuction
+    rv32i_word next_pc; // for branch pridiction and control hazard
     // ID
     rv32i_word rs1_out;
     rv32i_word rs2_out;
     // EX
     rv32i_word alu_out;
     logic br_en;
+    logic correct_pc_prediction; // For control hazard
     // MEM
     rv32i_word mdrreg_out;
     logic [3:0] rmask;
@@ -68,6 +70,7 @@ typedef struct packed {
 
 // The packet passed in the pipeline and stored by the buffers
 typedef struct packed {
+    logic valid; // For control hazard
     rv32i_data_packet_t data;
     rv32i_inst_packet_t inst; // decoded instruction
     rv32i_ctrl_packet_t ctrl;

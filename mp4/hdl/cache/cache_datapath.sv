@@ -2,7 +2,6 @@
 valid, dirty, tag, and LRU arrays, comparators, muxes,
 logic gates and other supporting logic. */
 import rv32i_types::*;
-import cache_types::*;
 
 module cache_datapath #(
     parameter s_offset = 5,
@@ -16,18 +15,13 @@ module cache_datapath #(
     input logic clk,
     input logic rst,
     // from controller
-    input [1:0] data_read,
     input dimux::dimux_sel_t dimux_sel,
     input domux::domux_sel_t domux_sel,
     input wemux::wemux_sel_t wemux_sel[1:0],
     input addrmux::addrmux_sel_t addrmux_sel,
-    input logic lru_read,
     input logic lru_load,
-    input logic [1:0] valid_read,
     input logic [1:0] valid_load,
-    input logic [1:0] dirty_read,
     input logic [1:0] dirty_load,
-    input logic [1:0] tag_read,
     input logic [1:0] tag_load,
     input logic lru_i,
     input logic [1:0] valid_i,
@@ -80,7 +74,6 @@ end
 data_array DataA0(
     .clk,
     .rst,
-    .read(data_read[0]),
     .write_en(wemux_out[0]),
     .rindex(set),
     .windex(set),
@@ -91,7 +84,6 @@ data_array DataA0(
 data_array DataA1(
     .clk,
     .rst,
-    .read(data_read[1]),
     .write_en(wemux_out[1]),
     .rindex(set),
     .windex(set),
@@ -102,7 +94,6 @@ data_array DataA1(
 array LRUA(
     .clk,
     .rst,
-    .read(lru_read),
     .load(lru_load),
     .rindex(set),
     .windex(set),
@@ -113,7 +104,6 @@ array LRUA(
 array ValidA0(
     .clk,
     .rst,
-    .read(valid_read[0]),
     .load(valid_load[0]),
     .rindex(set),
     .windex(set),
@@ -124,7 +114,6 @@ array ValidA0(
 array ValidA1(
     .clk,
     .rst,
-    .read(valid_read[1]),
     .load(valid_load[1]),
     .rindex(set),
     .windex(set),
@@ -135,7 +124,6 @@ array ValidA1(
 array DirtyA0(
     .clk,
     .rst,
-    .read(dirty_read[0]),
     .load(dirty_load[0]),
     .rindex(set),
     .windex(set),
@@ -146,7 +134,6 @@ array DirtyA0(
 array DirtyA1(
     .clk,
     .rst,
-    .read(dirty_read[1]),
     .load(dirty_load[1]),
     .rindex(set),
     .windex(set),
@@ -158,7 +145,6 @@ array #(s_index, s_tag) TagA0
 (
     .clk,
     .rst,
-    .read(tag_read[0]),
     .load(tag_load[0]),
     .rindex(set),
     .windex(set),
@@ -170,7 +156,6 @@ array #(s_index, s_tag) TagA1
 (
     .clk,
     .rst,
-    .read(tag_read[1]),
     .load(tag_load[1]),
     .rindex(set),
     .windex(set),
