@@ -54,7 +54,7 @@ assign rs1 = if_id.data.instruction[19:15];
 assign rs2 = if_id.data.instruction[24:20];
 
 // Move the pipeline
-assign load_buffers = inst_mem_resp && (!ex_mem.ctrl.mem || data_mem_resp);
+assign load_buffers = inst_mem_resp && (!ex_mem.valid || !ex_mem.ctrl.mem || data_mem_resp);
 
 // Buffer select
 assign if_id_sel = buffer_load_mux::load_ifid;
