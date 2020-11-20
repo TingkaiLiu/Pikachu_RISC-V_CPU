@@ -51,8 +51,10 @@
             Need forward input: 
                 only ID: if the data to read is currently at WB/EX/MEM
                 when the data is ready and move the pipeline is handled by control
-    Bug:
+    Bug1:
         When the inst at mem is invalid, forgot to change the condition for done
             and load_buffer is never asserted
         Note: also need to change if brach prediction is added!
+    Bug2:
+        When write to x0, should write 0 anyway
         

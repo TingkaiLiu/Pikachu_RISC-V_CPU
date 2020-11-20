@@ -18,7 +18,7 @@ module WB
 
 rv32i_word regfilemux_out;
 
-assign regfile_in = regfilemux_out;
+assign regfile_in = dest ? regfilemux_out : 0; // won't write to x0
 assign dest = wb_in.inst.rd;
 assign load_regfile = wb_in.valid && ctrl.load_regfile;
 
