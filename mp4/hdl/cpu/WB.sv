@@ -18,7 +18,7 @@ module WB
 
 rv32i_word regfilemux_out;
 
-assign regfile_in = regfilemux_out;
+assign regfile_in = dest ? regfilemux_out : 0; // won't write to x0
 assign dest = wb_in.inst.rd;
 assign load_regfile = wb_in.valid && ctrl.load_regfile;
 
@@ -29,7 +29,7 @@ rv32i_word mdrreg_out;
 rv32i_word pc_out;
 
 assign alu_out = wb_in.data.alu_out;
-assign br_en = {23'b0, wb_in.data.br_en};
+assign br_en = {31'b0, wb_in.data.br_en};
 assign u_imm = wb_in.inst.u_imm;
 assign mdrreg_out = wb_in.data.mdrreg_out;
 assign pc_out = wb_in.data.pc;
@@ -42,8 +42,9 @@ always_comb begin : REGFILEMUX
         regfilemux::alu_out: regfilemux_out = alu_out;
         regfilemux::br_en: regfilemux_out = br_en;
         regfilemux::u_imm: regfilemux_out = u_imm;
-        regfilemux::lw: regfilemux_out = mdrreg_out;
         regfilemux::pc_plus4: regfilemux_out = pc_out + 4;
+
+        regfilemux::lw: regfilemux_out = mdrreg_out;
         regfilemux::lb: begin
             case (wb_in.data.rmask)
                 4'b0001: regfilemux_out = {{24{mdrreg_out[7]}}, mdrreg_out[7:0]};
