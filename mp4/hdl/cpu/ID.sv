@@ -81,6 +81,11 @@ always_comb begin
         // From MEM
         else if (mem_in.valid && mem_in.ctrl.wb && rs1 == mem_in.inst.rd) begin
             case (mem_in.ctrl.regfilemux_sel)
+                regfilemux::alu_out: id_out.data.rs1_out = mem_in.data.alu_out;
+                regfilemux::br_en: id_out.data.rs1_out = {31'b0, mem_in.data.br_en};
+                regfilemux::u_imm: id_out.data.rs1_out = mem_in.inst.u_imm;
+                regfilemux::pc_plus4: id_out.data.rs1_out = mem_in.data.pc + 4;
+                
                 regfilemux::lb: begin
                     case (rmask)
                         4'b0001: id_out.data.rs1_out = {{24{data_mem_rdata[7]}}, data_mem_rdata[7:0]};
@@ -135,6 +140,11 @@ always_comb begin
         // From MEM
         else if (mem_in.valid && mem_in.ctrl.wb && rs2 == mem_in.inst.rd) begin
             case (mem_in.ctrl.regfilemux_sel) 
+                regfilemux::alu_out: id_out.data.rs2_out = mem_in.data.alu_out;
+                regfilemux::br_en: id_out.data.rs2_out = {31'b0, mem_in.data.br_en};
+                regfilemux::u_imm: id_out.data.rs2_out = mem_in.inst.u_imm;
+                regfilemux::pc_plus4: id_out.data.rs2_out = mem_in.data.pc + 4;
+                
                 regfilemux::lb: begin
                     case (rmask)
                         4'b0001: id_out.data.rs2_out = {{24{data_mem_rdata[7]}}, data_mem_rdata[7:0]};
