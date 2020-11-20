@@ -57,4 +57,9 @@
         Note: also need to change if brach prediction is added!
     Bug2:
         When write to x0, should write 0 anyway
+    Bug3:
+        For the forward input at MEM, the result is still possible to come from EX
+            dr
+            xx
+            sr
         
