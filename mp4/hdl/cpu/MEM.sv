@@ -8,6 +8,9 @@ module MEM
     input rv32i_ctrl_packet_t ctrl, // won't be used
     input rv32i_packet_t mem_in,
     output rv32i_packet_t mem_out,
+
+    output logic [3:0] rmask,
+
     // Data Cache
     output rv32i_word data_mem_address,
     output rv32i_word data_mem_wdata,

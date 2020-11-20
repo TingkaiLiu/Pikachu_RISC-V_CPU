@@ -44,6 +44,7 @@ rv32i_packet_t mem_wb;
 logic br_en;
 rv32i_word alu_out;
 logic correct_pc_prediction;
+logic [3:0] rmask;
 
 pcmux::pcmux_sel_t pcmux_sel;
 rv32i_ctrl_packet_t ex_ctrl;

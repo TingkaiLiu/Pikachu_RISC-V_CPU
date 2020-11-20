@@ -17,6 +17,7 @@ module ID
     input logic br_en,
     input rv32i_word alu_out,
     input rv32i_word data_mem_rdata,
+    input logic [3:0] rmask,
     input logic [31:0] regfile_in;
     
     // Connection with control rom 
@@ -82,7 +83,7 @@ always_comb begin
         else if (mem_in.valid && mem_in.ctrl.wb && rs1 == mem_in.inst.rd) begin
             case (mem_in.ctrl.regfilemux_sel) begin
                 regfilemux::lb: begin
-                    case (mem_in.data.rmask)
+                    case (rmask)
                         4'b0001: id_out.data.rs1_out = {{24{data_mem_rdata[7]}}, data_mem_rdata[7:0]};
                         4'b0010: id_out.data.rs1_out = {{24{data_mem_rdata[15]}}, data_mem_rdata[15:8]};
                         4'b0100: id_out.data.rs1_out = {{24{data_mem_rdata[23]}}, data_mem_rdata[23:16]};
@@ -91,7 +92,7 @@ always_comb begin
                     endcase
                 end
                 regfilemux::lbu: begin
-                    case (mem_in.data.rmask)
+                    case (rmask)
                         4'b0001: id_out.data.rs1_out = {24'b0, data_mem_rdata[7:0]};
                         4'b0010: id_out.data.rs1_out = {24'b0, data_mem_rdata[15:8]};
                         4'b0100: id_out.data.rs1_out = {24'b0, data_mem_rdata[23:16]};
@@ -100,14 +101,14 @@ always_comb begin
                     endcase
                 end
                 regfilemux::lh: begin
-                    case (mem_in.data.rmask)
+                    case (rmask)
                         4'b0011: id_out.data.rs1_out = {{16{data_mem_rdata[15]}}, data_mem_rdata[15:0]};
                         4'b1100: id_out.data.rs1_out = {{16{data_mem_rdata[31]}}, data_mem_rdata[31:16]};
                         default: $fatal("ID: Bad rmask of lh!\n");
                     endcase
                 end
                 regfilemux::lhu: begin
-                    case(mem_in.data.rmask)
+                    case(rmask)
                         4'b0011: id_out.data.rs1_out = {16'b0, data_mem_rdata[15:0]};
                         4'b1100: id_out.data.rs1_out = {16'b0, data_mem_rdata[31:16]};
                         default: $fatal("ID: Bad rmask of lhu!\n");
@@ -136,7 +137,7 @@ always_comb begin
         else if (mem_in.valid && mem_in.ctrl.wb && rs2 == mem_in.inst.rd) begin
             case (mem_in.ctrl.regfilemux_sel) begin
                 regfilemux::lb: begin
-                    case (mem_in.data.rmask)
+                    case (rmask)
                         4'b0001: id_out.data.rs2_out = {{24{data_mem_rdata[7]}}, data_mem_rdata[7:0]};
                         4'b0010: id_out.data.rs2_out = {{24{data_mem_rdata[15]}}, data_mem_rdata[15:8]};
                         4'b0100: id_out.data.rs2_out = {{24{data_mem_rdata[23]}}, data_mem_rdata[23:16]};
@@ -145,7 +146,7 @@ always_comb begin
                     endcase
                 end
                 regfilemux::lbu: begin
-                    case (mem_in.data.rmask)
+                    case (rmask)
                         4'b0001: id_out.data.rs2_out = {24'b0, data_mem_rdata[7:0]};
                         4'b0010: id_out.data.rs2_out = {24'b0, data_mem_rdata[15:8]};
                         4'b0100: id_out.data.rs2_out = {24'b0, data_mem_rdata[23:16]};
@@ -154,14 +155,14 @@ always_comb begin
                     endcase
                 end
                 regfilemux::lh: begin
-                    case (mem_in.data.rmask)
+                    case (rmask)
                         4'b0011: id_out.data.rs2_out = {{16{data_mem_rdata[15]}}, data_mem_rdata[15:0]};
                         4'b1100: id_out.data.rs2_out = {{16{data_mem_rdata[31]}}, data_mem_rdata[31:16]};
                         default: $fatal("ID: Bad rmask of lh!\n");
                     endcase
                 end
                 regfilemux::lhu: begin
-                    case(mem_in.data.rmask)
+                    case(rmask)
                         4'b0011: id_out.data.rs2_out = {16'b0, data_mem_rdata[15:0]};
                         4'b1100: id_out.data.rs2_out = {16'b0, data_mem_rdata[31:16]};
                         default: $fatal("ID: Bad rmask of lhu!\n");
