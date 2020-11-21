@@ -19,7 +19,18 @@ module MEM
 );
 
 assign data_mem_address = {mem_in.data.alu_out[31:2], 2'b0};
-assign data_mem_wdata = mem_in.data.rs2_out;
+always_comb begin
+    data_mem_wdata = mem_in.data.rs2_out;
+    case (data_mem_byte_enable)
+        4'b0001: data_mem_wdata = mem_in.data.rs2_out;
+        4'b0010: data_mem_wdata = mem_in.data.rs2_out << 8;
+        4'b0100: data_mem_wdata = mem_in.data.rs2_out << 16;
+        4'b1000: data_mem_wdata = mem_in.data.rs2_out << 24;
+        4'b0011: data_mem_wdata = mem_in.data.rs2_out;
+        4'b1100: data_mem_wdata = mem_in.data.rs2_out << 16;
+        default: data_mem_wdata = mem_in.data.rs2_out;
+    endcase
+end
 assign mem_out.data.mdrreg_out = data_mem_rdata;
 
 assign mem_out.data.mem_addr = data_mem_address;
@@ -44,6 +55,8 @@ always_comb begin
                 lb, lbu: mem_out.data.rmask = (4'b0001 << mem_offset);
                 default: $fatal("MEM: Bad funct3 at load!\n");
             endcase
+
+            data_mem_byte_enable = mem_out.data.rmask;
         end
         op_store: begin         
             case (store_funct3_t'(mem_in.inst.funct3))
