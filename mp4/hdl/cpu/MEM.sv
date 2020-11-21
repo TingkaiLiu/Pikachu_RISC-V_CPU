@@ -55,6 +55,8 @@ always_comb begin
                 lb, lbu: mem_out.data.rmask = (4'b0001 << mem_offset);
                 default: $fatal("MEM: Bad funct3 at load!\n");
             endcase
+
+            data_mem_byte_enable = mem_out.data.rmask;
         end
         op_store: begin         
             case (store_funct3_t'(mem_in.inst.funct3))

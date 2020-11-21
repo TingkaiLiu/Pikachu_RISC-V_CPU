@@ -51,7 +51,7 @@ always_comb begin : REGFILEMUX
                 4'b0010: regfilemux_out = {{24{mdrreg_out[15]}}, mdrreg_out[15:8]};
                 4'b0100: regfilemux_out = {{24{mdrreg_out[23]}}, mdrreg_out[23:16]};
                 4'b1000: regfilemux_out = {{24{mdrreg_out[31]}}, mdrreg_out[31:24]};
-                default: $fatal("WB: Bad rmask of lb!\n");
+                default: regfilemux_out = mdrreg_out;
             endcase
         end
         regfilemux::lbu: begin
@@ -60,21 +60,21 @@ always_comb begin : REGFILEMUX
                 4'b0010: regfilemux_out = {24'b0, mdrreg_out[15:8]};
                 4'b0100: regfilemux_out = {24'b0, mdrreg_out[23:16]};
                 4'b1000: regfilemux_out = {24'b0, mdrreg_out[31:24]};
-                default: $fatal("WB: Bad rmask of lbu!\n");
+                default: regfilemux_out = mdrreg_out;
             endcase
         end
         regfilemux::lh: begin
             case (wb_in.data.rmask)
                 4'b0011: regfilemux_out = {{16{mdrreg_out[15]}}, mdrreg_out[15:0]};
                 4'b1100: regfilemux_out = {{16{mdrreg_out[31]}}, mdrreg_out[31:16]};
-                default: $fatal("WB: Bad rmask of lh!\n");
+                default: regfilemux_out = mdrreg_out;
             endcase
         end
         regfilemux::lhu: begin
             case(wb_in.data.rmask)
                 4'b0011: regfilemux_out = {16'b0, mdrreg_out[15:0]};
                 4'b1100: regfilemux_out = {16'b0, mdrreg_out[31:16]};
-                default: $fatal("WB: Bad rmask of lhu!\n");
+                default: regfilemux_out = mdrreg_out;
             endcase
         end
         default: `BAD_MUX_SEL;
