@@ -85,7 +85,7 @@ always_comb begin
 end
 
 // IF
-assign inst_mem_read = load_pc;
+assign inst_mem_read = 1'b1;
 assign inst_mem_write = 1'b0;
 
 always_comb begin
