@@ -35,26 +35,21 @@ rv32i_word mem_byte_enable256;
 llc_cacheline mem_wdata256;
 llc_cacheline mem_rdata256;
 // signals between controller and datapath
-logic [1:0] cmp_d2c;
-logic [1:0] data_read;
 dimux::dimux_sel_t dimux_sel;
 domux::domux_sel_t domux_sel;
-wemux::wemux_sel_t wemux_sel [1:0];
 addrmux::addrmux_sel_t addrmux_sel;
-logic lru_read;
+wemux::wemux_sel_t wemux_sel [3:0];
 logic lru_load;
-logic lru_d2c;
-logic lru_c2d;
-logic [1:0] valid_read;
-logic [1:0] valid_load;
-logic [1:0] valid_d2c;
-logic [1:0] valid_c2d;
-logic [1:0] dirty_read;
-logic [1:0] dirty_load;
-logic [1:0] dirty_d2c;
-logic [1:0] dirty_c2d;
-logic [1:0] tag_read;
-logic [1:0] tag_load;
+logic [2:0] lru_d2c;
+logic [2:0] lru_c2d;
+logic [3:0] valid_load;
+logic [3:0] valid_d2c;
+logic [3:0] valid_c2d;
+logic [3:0] dirty_load;
+logic [3:0] dirty_d2c;
+logic [3:0] dirty_c2d;
+logic [3:0] tag_load;
+logic [3:0] hit_d2c;
 
 cache_control control
 (
@@ -64,12 +59,12 @@ cache_control control
     .lru_i(lru_d2c),
     .valid_i(valid_d2c),
     .dirty_i(dirty_d2c),
-    .cmp_i(cmp_d2c),
+    .hit_i(hit_d2c),
     // to datapath
     .dimux_sel,
     .domux_sel,
-    .wemux_sel,
     .addrmux_sel,
+    .wemux_sel,
     .lru_load,
     .valid_load,
     .dirty_load,
@@ -94,8 +89,8 @@ cache_datapath datapath
     // from controller
     .dimux_sel,
     .domux_sel,
-    .wemux_sel,
     .addrmux_sel,
+    .wemux_sel,
     .lru_load,
     .valid_load,
     .dirty_load,
@@ -107,7 +102,7 @@ cache_datapath datapath
     .lru_o(lru_d2c),
     .valid_o(valid_d2c),
     .dirty_o(dirty_d2c),
-    .cmp_o(cmp_d2c),
+    .hit_o(hit_d2c),
     // CPU
     .address_i(mem_address),
     // bus adaptor
@@ -122,13 +117,15 @@ cache_datapath datapath
 
 bus_adapter bus_adapter
 (
-    .mem_wdata256,
-    .mem_rdata256,
+    // CPU
+    .address(mem_address),
     .mem_wdata,
     .mem_rdata,
     .mem_byte_enable,
-    .mem_byte_enable256,
-    .address(mem_address)
+    // Cache
+    .mem_wdata256,
+    .mem_rdata256,
+    .mem_byte_enable256
 );
 
 endmodule : cache
