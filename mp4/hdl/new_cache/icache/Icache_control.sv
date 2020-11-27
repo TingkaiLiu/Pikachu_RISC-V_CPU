@@ -19,7 +19,7 @@ module Icache_control (
     input logic pref_hit,
     output dimux::dimux_sel_t dimux_sel,
     output domux::domux_sel_t domux_sel,
-    pwdatamux::pwdatamux_sel_t pwdatamux_sel,
+    output pwdatamux::pwdatamux_sel_t pwdatamux_sel,
     output addrmux::addrmux_sel_t addrmux_sel,
     output paddrmux::paddrmux_sel_t paddrmux_sel,
     output wemux::wemux_sel_t wemux_sel [3:0],
@@ -131,7 +131,6 @@ enum int unsigned {
 } state, next_state;
 
 function void set_defaults();
-    load_prefetch_line = 1'b0;
     dimux_sel = dimux::mem_wdata256_from_cpu;
     domux_sel = domux::data_array_0;
     pwdatamux_sel = pwdatamux::domux_out;
@@ -287,6 +286,7 @@ always_comb
 begin : next_state_logic
     /* Next state information and conditions (if any)
      * for transitioning between states */
+	 load_prefetch_line = 1'b0;
 	 next_state = state;
      case (state)
         hit_check_state:
