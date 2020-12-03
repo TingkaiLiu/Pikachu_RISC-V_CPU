@@ -19,11 +19,9 @@ module cache_datapath #(
     input domux::domux_sel_t domux_sel,
     input addrmux::addrmux_sel_t addrmux_sel,
     input wemux::wemux_sel_t wemux_sel [3:0],
-    // input logic lru_load,
     input logic [3:0] valid_load,
     input logic [3:0] dirty_load,
     input logic [3:0] tag_load,
-    // input logic [2:0] lru_i,
     input logic [3:0] valid_i,
     input logic [3:0] dirty_i,
     // to controller
@@ -33,6 +31,8 @@ module cache_datapath #(
     output logic [3:0] hit_o,
     // CPU
     input rv32i_word address_i,
+    input logic mem_read,
+    input logic mem_write,
     // bus adaptor
     input rv32i_word mem_byte_enable256,
     input llc_cacheline mem_wdata256,
@@ -75,19 +75,20 @@ begin
     end
 end
 
+// lru
 logic [s_index-1:0] windex;
-
-// to avoid circular assignment
 logic [2:0] lru_i;
 logic [3:0] lru_load;
 always_ff @(posedge clk) begin
-    case (hit_o)
-        4'b0001: begin windex <= set; lru_i[1] <= 1'b0; lru_i[0] <= 1'b0; lru_i[2] <= lru_o[2]; lru_load <= 1'b1; end
-        4'b0010: begin windex <= set; lru_i[1] <= 1'b1; lru_i[0] <= 1'b0; lru_i[2] <= lru_o[2]; lru_load <= 1'b1; end
-        4'b0100: begin windex <= set; lru_i[2] <= 1'b0; lru_i[0] <= 1'b1; lru_i[1] <= lru_o[1]; lru_load <= 1'b1; end
-        4'b1000: begin windex <= set; lru_i[2] <= 1'b1; lru_i[0] <= 1'b1; lru_i[1] <= lru_o[1]; lru_load <= 1'b1; end
-        default: begin lru_o <= lru_i; lru_load <= 1'b0; end
-    endcase
+    if (mem_read || mem_write) begin
+        case (hit_o)
+            4'b0001: begin windex <= set; lru_i[1] <= 1'b0; lru_i[0] <= 1'b0; lru_i[2] <= lru_o[2]; lru_load <= 1'b1; end
+            4'b0010: begin windex <= set; lru_i[1] <= 1'b1; lru_i[0] <= 1'b0; lru_i[2] <= lru_o[2]; lru_load <= 1'b1; end
+            4'b0100: begin windex <= set; lru_i[2] <= 1'b0; lru_i[0] <= 1'b1; lru_i[1] <= lru_o[1]; lru_load <= 1'b1; end
+            4'b1000: begin windex <= set; lru_i[2] <= 1'b1; lru_i[0] <= 1'b1; lru_i[1] <= lru_o[1]; lru_load <= 1'b1; end
+            default: begin lru_i <= lru_o; lru_load <= 1'b0; end
+        endcase
+    end
 end
 
 array #(s_index, 3) LRUA(.clk, .load(lru_load), .rindex(set), .windex(windex), .datain(lru_i), .dataout(lru_o));
