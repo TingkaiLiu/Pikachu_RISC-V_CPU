@@ -14,11 +14,11 @@ module cache_control (
     output domux::domux_sel_t domux_sel,
     output addrmux::addrmux_sel_t addrmux_sel,
     output wemux::wemux_sel_t wemux_sel [3:0],
-    output logic lru_load,
+    // output logic lru_load,
     output logic [3:0] valid_load,
     output logic [3:0] dirty_load,
     output logic [3:0] tag_load,
-    output logic [2:0] lru_o,
+    // output logic [2:0] lru_o,
     output logic [3:0] valid_o,
     output logic [3:0] dirty_o,
     // CPU
@@ -63,16 +63,16 @@ always_comb begin
     endcase
 end
 
-// to avoid circular assignment
-always_ff @(posedge clk) begin
-    case (hit_i)
-        4'b0001: begin lru_o[1] <= 1'b0; lru_o[0] <= 1'b0; lru_o[2] <= lru_i[2]; end
-        4'b0010: begin lru_o[1] <= 1'b1; lru_o[0] <= 1'b0; lru_o[2] <= lru_i[2]; end
-        4'b0100: begin lru_o[2] <= 1'b0; lru_o[0] <= 1'b1; lru_o[1] <= lru_i[1]; end
-        4'b1000: begin lru_o[2] <= 1'b1; lru_o[0] <= 1'b1; lru_o[1] <= lru_i[1]; end
-        default: lru_o <= lru_i;
-    endcase
-end
+// // to avoid circular assignment
+// always_ff @(posedge clk) begin
+//     case (hit_i)
+//         4'b0001: begin lru_o[1] <= 1'b0; lru_o[0] <= 1'b0; lru_o[2] <= lru_i[2]; lru_load <= 1'b1; end
+//         4'b0010: begin lru_o[1] <= 1'b1; lru_o[0] <= 1'b0; lru_o[2] <= lru_i[2]; lru_load <= 1'b1; end
+//         4'b0100: begin lru_o[2] <= 1'b0; lru_o[0] <= 1'b1; lru_o[1] <= lru_i[1]; lru_load <= 1'b1; end
+//         4'b1000: begin lru_o[2] <= 1'b1; lru_o[0] <= 1'b1; lru_o[1] <= lru_i[1]; lru_load <= 1'b1; end
+//         default: begin lru_o <= lru_i; lru_load <= 1'b0; end
+//     endcase
+// end
 
 enum int unsigned {
     /* List of states */
@@ -89,7 +89,7 @@ function void set_defaults();
     wemux_sel[1] = wemux::zeros;
     wemux_sel[2] = wemux::zeros;
     wemux_sel[3] = wemux::zeros;
-    lru_load = 1'b0;
+    // lru_load = 1'b0;
     // lru_o = lru_i;
     valid_load  = 4'b0000;
     valid_o     = 4'b0000;
@@ -112,7 +112,7 @@ begin : state_actions
         hit_check_state:
             if (mem_read || mem_write) begin
                 if (hit_i != 4'b0000) begin
-                    lru_load = 1'b1;
+                    // lru_load = 1'b1;
                     mem_resp = 1'b1;
 
                     if (mem_read)
