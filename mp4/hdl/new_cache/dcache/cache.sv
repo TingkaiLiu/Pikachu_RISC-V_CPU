@@ -39,9 +39,6 @@ dimux::dimux_sel_t dimux_sel;
 domux::domux_sel_t domux_sel;
 addrmux::addrmux_sel_t addrmux_sel;
 wemux::wemux_sel_t wemux_sel [3:0];
-logic lru_load;
-logic [2:0] lru_d2c;
-logic [2:0] lru_c2d;
 logic [3:0] valid_load;
 logic [3:0] valid_d2c;
 logic [3:0] valid_c2d;
@@ -49,6 +46,7 @@ logic [3:0] dirty_load;
 logic [3:0] dirty_d2c;
 logic [3:0] dirty_c2d;
 logic [3:0] tag_load;
+logic [2:0] lru_d2c;
 logic [3:0] hit_d2c;
 
 cache_control control
@@ -65,11 +63,9 @@ cache_control control
     .domux_sel,
     .addrmux_sel,
     .wemux_sel,
-    // .lru_load,
     .valid_load,
     .dirty_load,
     .tag_load,
-    // .lru_o(lru_c2d),
     .valid_o(valid_c2d),
     .dirty_o(dirty_c2d),
     // CPU
@@ -91,11 +87,9 @@ cache_datapath datapath
     .domux_sel,
     .addrmux_sel,
     .wemux_sel,
-    // .lru_load,
     .valid_load,
     .dirty_load,
     .tag_load,
-    // .lru_i(lru_c2d),
     .valid_i(valid_c2d),
     .dirty_i(dirty_c2d),
     // to controller
@@ -105,6 +99,8 @@ cache_datapath datapath
     .hit_o(hit_d2c),
     // CPU
     .address_i(mem_address),
+    .mem_read,
+    .mem_write,
     // bus adaptor
     .mem_byte_enable256,
     .mem_wdata256,

@@ -16,7 +16,6 @@ module Icache_control (
     input logic [3:0] nhit_i,
     // to datapath
     output logic load_prefetch_line,
-    input logic pref_hit,
     output dimux::dimux_sel_t dimux_sel,
     output domux::domux_sel_t domux_sel,
     output pwdatamux::pwdatamux_sel_t pwdatamux_sel,
@@ -25,21 +24,17 @@ module Icache_control (
     output wemux::wemux_sel_t wemux_sel [3:0],
     output nwemux::nwemux_sel_t nwemux_sel [3:0],
 
-    output logic lru_load,
     output logic [3:0] valid_load,
     output logic [3:0] dirty_load,
     output logic [3:0] tag_load,
 
-    output logic nlru_load,
     output logic [3:0] nvalid_load,
     output logic [3:0] ndirty_load,
     output logic [3:0] ntag_load,
 
-    output logic [2:0] lru_o,
     output logic [3:0] valid_o,
     output logic [3:0] dirty_o,
 
-    output logic [2:0] nlru_o,
     output logic [3:0] nvalid_o,
     output logic [3:0] ndirty_o,
     // CPU
@@ -87,7 +82,7 @@ end
 logic [1:0] nrpl_way_num;
 always_comb begin
     nrpl_way_num = 2'b00;
-    case (lru_i)
+    case (nlru_i)
         // X11 - 0
         3'b011: nrpl_way_num = 2'b00;
         3'b111: nrpl_way_num = 2'b00;
@@ -110,17 +105,6 @@ always_ff @(posedge clk) begin
         prefetch_rpl_way_num <= nrpl_way_num;
 end
 
-// to avoid circular assignment
-always_ff @(posedge clk) begin
-    case (hit_i)
-        4'b0001: begin lru_o[1] <= 1'b0; lru_o[0] <= 1'b0; lru_o[2] <= lru_i[2]; end
-        4'b0010: begin lru_o[1] <= 1'b1; lru_o[0] <= 1'b0; lru_o[2] <= lru_i[2]; end
-        4'b0100: begin lru_o[2] <= 1'b0; lru_o[0] <= 1'b1; lru_o[1] <= lru_i[1]; end
-        4'b1000: begin lru_o[2] <= 1'b1; lru_o[0] <= 1'b1; lru_o[1] <= lru_i[1]; end
-        default: lru_o <= lru_i;
-    endcase
-end
-
 enum int unsigned {
     /* List of states */
     hit_check_state,
@@ -141,14 +125,12 @@ function void set_defaults();
         nwemux_sel[i] = nwemux::zeros;
     end
 
-    lru_load = 1'b0;
     valid_load  = 4'b0000;
     valid_o     = 4'b0000;
     dirty_load  = 4'b0000;
     dirty_o     = 4'b0000;
     tag_load    = 4'b0000;
 
-    nlru_load = 1'b0;
     nvalid_load  = 4'b0000;
     nvalid_o     = 4'b0000;
     ndirty_load  = 4'b0000;
@@ -163,7 +145,6 @@ endfunction
 function void set_curr_hit();
     if (mem_read || mem_write) begin
         if (hit_i != 4'b0000 && hit_way_num != prefetch_rpl_way_num) begin
-            lru_load = 1'b1;
             mem_resp = 1'b1;
 
             if (mem_read)
@@ -189,7 +170,6 @@ begin : state_actions
         hit_check_state:
             if (mem_read || mem_write) begin
                 if (hit_i != 4'b0000) begin
-                    lru_load = 1'b1;
                     mem_resp = 1'b1;
 
                     if (mem_read)
@@ -318,10 +298,7 @@ begin : next_state_logic
                 next_state = hit_check_state;
         prefetch_write_back_state:
             if (pmem_resp)
-                if (pref_hit == 1'b0)
-                    next_state = hit_check_state;
-                else
-                    next_state = prefetch_read_back_state;
+                next_state = prefetch_read_back_state;
         prefetch_read_back_state:
             if (pmem_resp)
                 next_state = hit_check_state;
