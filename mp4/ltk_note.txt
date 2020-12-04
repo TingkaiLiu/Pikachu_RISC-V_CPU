@@ -65,4 +65,23 @@
     Bug4:
         Stalling didn't get the forwarded value
         Forgot the forward setting (only) for lw.................
+
+ooo:
+    Packet
+        Add "done" field for each stage
+    Add broadcast connection 
+        all to all connection with additional bus
+        keep the output buffer for each stage for broadcast
+            will require additional cycle for adding it to FIFO...
+                no the "incomplete packet" has already been enqueued
+            confused about how to label a register as dependent
+    Added FIFO
+        flushing the queue is done by reset
+        How to modify the values in FIFO?
+            Use inst order to look up
+    Multiple ALU connected to a single queue
+    Queue for decoded inst
+    Queue to memory
+    Queue to commit
+    How to represent dependency?
         

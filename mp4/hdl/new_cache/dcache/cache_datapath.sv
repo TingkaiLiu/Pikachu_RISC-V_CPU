@@ -78,7 +78,7 @@ end
 // lru
 logic [s_index-1:0] windex;
 logic [2:0] lru_i;
-logic [3:0] lru_load;
+logic lru_load;
 always_ff @(posedge clk) begin
     if (mem_read || mem_write) begin
         case (hit_o)
