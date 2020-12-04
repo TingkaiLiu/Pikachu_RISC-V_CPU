@@ -2,7 +2,7 @@
 data arrays. This module supports a write mask to
 help you update the values in the array. */
 
-module data_array #(
+module Ddata_array #(
     parameter s_offset = 5,
     parameter s_index = 3
 )
@@ -40,4 +40,4 @@ always_ff @(posedge clk) begin
     end
 end
 
-endmodule : data_array
+endmodule : Ddata_array

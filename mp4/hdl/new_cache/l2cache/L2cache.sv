@@ -1,8 +1,13 @@
-/* MODIFY. Your cache design. It contains the cache
-controller, cache datapath, and bus adapter. */
+/*
+    L2 Cache
+    Created by Tingkai Liu on Dec 4, 2020
+    Specifically, remove the bus adaptor
+*/
+
+
 import rv32i_types::*;
 
-module cache #(
+module L2cache #(
     parameter s_offset = 5,
     parameter s_index  = 3,
     parameter s_tag    = 32 - s_offset - s_index,
@@ -13,11 +18,11 @@ module cache #(
 (
     input logic clk,
     input logic rst,
-    // CPU
+    // L1 D-Cache
     input rv32i_word mem_address,
-    input [3:0] mem_byte_enable,
-    input rv32i_word mem_wdata,
-    output rv32i_word mem_rdata,
+    // input [3:0] mem_byte_enable,
+    input llc_cacheline mem_wdata,
+    output llc_cacheline mem_rdata,
     input logic mem_read,
     input logic mem_write,
     output logic mem_resp,
@@ -34,6 +39,10 @@ module cache #(
 rv32i_word mem_byte_enable256;
 llc_cacheline mem_wdata256;
 llc_cacheline mem_rdata256;
+assign mem_byte_enable256 = 32'hFFFFFFFF;
+assign mem_wdata256 = mem_wdata;
+assign mem_rdata = mem_rdata256;
+
 // signals between controller and datapath
 dimux::dimux_sel_t dimux_sel;
 domux::domux_sel_t domux_sel;
@@ -49,7 +58,7 @@ logic [3:0] tag_load;
 logic [2:0] lru_d2c;
 logic [3:0] hit_d2c;
 
-cache_control control
+L2cache_control control
 (
     .clk,
     .rst,
@@ -78,7 +87,7 @@ cache_control control
     .pmem_write
 );
 
-cache_datapath datapath
+L2cache_datapath datapath
 (
     .clk,
     .rst,
@@ -111,17 +120,17 @@ cache_datapath datapath
     .pmem_address
 );
 
-bus_adapter bus_adapter
-(
-    // CPU
-    .address(mem_address),
-    .mem_wdata,
-    .mem_rdata,
-    .mem_byte_enable,
-    // Cache
-    .mem_wdata256,
-    .mem_rdata256,
-    .mem_byte_enable256
-);
+// bus_adapter bus_adapter
+// (
+//     // CPU
+//     .address(mem_address),
+//     .mem_wdata,
+//     .mem_rdata,
+//     .mem_byte_enable,
+//     // Cache
+//     .mem_wdata256,
+//     .mem_rdata256,
+//     .mem_byte_enable256
+// );
 
-endmodule : cache
+endmodule : L2cache
