@@ -63,6 +63,7 @@ end
 
 enum int unsigned {
     /* List of states */
+    wait_state,
     hit_check_state,
     write_back_state,
     read_back_state
@@ -94,6 +95,7 @@ begin : state_actions
     set_defaults();
     /* Actions for each state */
     case (state)
+        wait_state: ;
         hit_check_state:
             if (mem_read || mem_write) begin
                 if (hit_i != 4'b0000) begin
@@ -138,21 +140,26 @@ begin : next_state_logic
      * for transitioning between states */
 	 next_state = state;
      case (state)
-        hit_check_state:
-            if (mem_read || mem_write) begin
-                if (hit_i == 4'b0000) begin
-                    if (dirty_i[rpl_way_num] && valid_i[rpl_way_num])
-                        next_state = write_back_state;
-                    else
-                        next_state = read_back_state;
-                end
-            end
+        wait_state:
+        begin
+            if (mem_read || mem_write)
+                next_state = hit_check_state;
+        end
+        hit_check_state: 
+            if (hit_i == 4'b0000) begin
+                if (dirty_i[rpl_way_num] && valid_i[rpl_way_num])
+                    next_state = write_back_state;
+                else
+                    next_state = read_back_state;
+            end 
+            else
+                next_state = wait_state;
         write_back_state:
             if (pmem_resp)
                 next_state = read_back_state;
         read_back_state:
             if (pmem_resp)
-                next_state = hit_check_state;
+                next_state = wait_state;
         default: ;
      endcase
 end
@@ -161,7 +168,7 @@ always_ff @(posedge clk)
 begin: next_state_assignment
     /* Assignment of next state on clock edge */
     if (rst)
-        state <= hit_check_state;
+        state <= wait_state;
     else
         state <= next_state;
 end

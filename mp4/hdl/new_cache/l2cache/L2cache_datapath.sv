@@ -91,27 +91,27 @@ always_ff @(posedge clk) begin
     end
 end
 
-Darray #(s_index, 3) LRUA(.clk, .load(lru_load), .rindex(set), .windex(windex), .datain(lru_i), .dataout(lru_o));
+L2array #(s_index, 3) LRUA(.clk, .load(lru_load), .rindex(set), .windex(windex), .datain(lru_i), .dataout(lru_o));
 
-Ddata_array DataA0(.clk, .write_en(wemux_out[0]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[0]));
-Ddata_array DataA1(.clk, .write_en(wemux_out[1]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[1]));
-Ddata_array DataA2(.clk, .write_en(wemux_out[2]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[2]));
-Ddata_array DataA3(.clk, .write_en(wemux_out[3]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[3]));
+L2data_array DataA0(.clk, .write_en(wemux_out[0]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[0]));
+L2data_array DataA1(.clk, .write_en(wemux_out[1]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[1]));
+L2data_array DataA2(.clk, .write_en(wemux_out[2]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[2]));
+L2data_array DataA3(.clk, .write_en(wemux_out[3]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[3]));
 
-Darray ValidA0(.clk, .load(valid_load[0]), .rindex(set), .windex(set), .datain(valid_i[0]), .dataout(valid_o[0]));
-Darray ValidA1(.clk, .load(valid_load[1]), .rindex(set), .windex(set), .datain(valid_i[1]), .dataout(valid_o[1]));
-Darray ValidA2(.clk, .load(valid_load[2]), .rindex(set), .windex(set), .datain(valid_i[2]), .dataout(valid_o[2]));
-Darray ValidA3(.clk, .load(valid_load[3]), .rindex(set), .windex(set), .datain(valid_i[3]), .dataout(valid_o[3]));
+L2array ValidA0(.clk, .load(valid_load[0]), .rindex(set), .windex(set), .datain(valid_i[0]), .dataout(valid_o[0]));
+L2array ValidA1(.clk, .load(valid_load[1]), .rindex(set), .windex(set), .datain(valid_i[1]), .dataout(valid_o[1]));
+L2array ValidA2(.clk, .load(valid_load[2]), .rindex(set), .windex(set), .datain(valid_i[2]), .dataout(valid_o[2]));
+L2array ValidA3(.clk, .load(valid_load[3]), .rindex(set), .windex(set), .datain(valid_i[3]), .dataout(valid_o[3]));
 
-Darray DirtyA0(.clk, .load(dirty_load[0]), .rindex(set), .windex(set), .datain(dirty_i[0]), .dataout(dirty_o[0]));
-Darray DirtyA1(.clk, .load(dirty_load[1]), .rindex(set), .windex(set), .datain(dirty_i[1]), .dataout(dirty_o[1]));
-Darray DirtyA2(.clk, .load(dirty_load[2]), .rindex(set), .windex(set), .datain(dirty_i[2]), .dataout(dirty_o[2]));
-Darray DirtyA3(.clk, .load(dirty_load[3]), .rindex(set), .windex(set), .datain(dirty_i[3]), .dataout(dirty_o[3]));
+L2array DirtyA0(.clk, .load(dirty_load[0]), .rindex(set), .windex(set), .datain(dirty_i[0]), .dataout(dirty_o[0]));
+L2array DirtyA1(.clk, .load(dirty_load[1]), .rindex(set), .windex(set), .datain(dirty_i[1]), .dataout(dirty_o[1]));
+L2array DirtyA2(.clk, .load(dirty_load[2]), .rindex(set), .windex(set), .datain(dirty_i[2]), .dataout(dirty_o[2]));
+L2array DirtyA3(.clk, .load(dirty_load[3]), .rindex(set), .windex(set), .datain(dirty_i[3]), .dataout(dirty_o[3]));
 
-Darray #(s_index, s_tag) TagA0 (.clk, .load(tag_load[0]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[0]));
-Darray #(s_index, s_tag) TagA1 (.clk, .load(tag_load[1]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[1]));
-Darray #(s_index, s_tag) TagA2 (.clk, .load(tag_load[2]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[2]));
-Darray #(s_index, s_tag) TagA3 (.clk, .load(tag_load[3]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[3]));
+L2array #(s_index, s_tag) TagA0 (.clk, .load(tag_load[0]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[0]));
+L2array #(s_index, s_tag) TagA1 (.clk, .load(tag_load[1]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[1]));
+L2array #(s_index, s_tag) TagA2 (.clk, .load(tag_load[2]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[2]));
+L2array #(s_index, s_tag) TagA3 (.clk, .load(tag_load[3]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[3]));
 
 always_comb begin : MUXES
     wemux_out[0] = {s_mask{1'b0}};
