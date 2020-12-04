@@ -31,9 +31,7 @@ rv32i_packet_t wb_pkt;
 assign wb_pkt = dut.cpu.WB.wb_in;
 
 assign rvfi.commit = dut.cpu.load_buffers && wb_pkt.valid; // Set high when a valid instruction is modifying regfile or PC
-assign rvfi.halt = wb_pkt.inst.opcode == op_br && 
-                    (wb_pkt.inst.rs1 == wb_pkt.inst.rs2) && 
-                    (wb_pkt.data.pc == wb_pkt.data.alu_out);  // Set high when you detect an infinite loop
+assign rvfi.halt = wb_pkt.valid && (wb_pkt.data.pc == wb_pkt.data.next_pc); // Set high when you detect an infinite loop
 initial rvfi.order = 0;
 always @(posedge itf.clk iff rvfi.commit) rvfi.order <= rvfi.order + 1; // Modify for OoO
 
