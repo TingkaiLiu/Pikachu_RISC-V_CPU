@@ -109,13 +109,13 @@ assign itf.inst_read  = dut.cache_top.Icache.mem_read;
 assign itf.inst_addr  = dut.cache_top.Icache.mem_address;
 assign itf.inst_resp  = dut.cache_top.Icache.mem_resp;
 assign itf.inst_rdata = dut.cache_top.Icache.mem_rdata;
-assign itf.data_read  = dut.cache_top.Dcache.mem_read;
-assign itf.data_write = dut.cache_top.Dcache.mem_write;
-assign itf.data_mbe   = dut.cache_top.Dcache.mem_byte_enable;
-assign itf.data_addr  = dut.cache_top.Dcache.mem_address;
-assign itf.data_wdata = dut.cache_top.Dcache.mem_wdata;
-assign itf.data_resp  = dut.cache_top.Dcache.mem_resp;
-assign itf.data_rdata = dut.cache_top.Dcache.mem_rdata;
+assign itf.data_read  = dut.cache_top.Dcache1.mem_read;
+assign itf.data_write = dut.cache_top.Dcache1.mem_write;
+assign itf.data_mbe   = dut.cache_top.Dcache1.mem_byte_enable;
+assign itf.data_addr  = dut.cache_top.Dcache1.mem_address;
+assign itf.data_wdata = dut.cache_top.Dcache1.mem_wdata;
+assign itf.data_resp  = dut.cache_top.Dcache1.mem_resp;
+assign itf.data_rdata = dut.cache_top.Dcache1.mem_rdata;
 
 /*********************** End Shadow Memory Assignments ***********************/
 
