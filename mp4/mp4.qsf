@@ -67,6 +67,11 @@ set_global_assignment -name EDA_TEST_BENCH_FILE hvl/shadow_memory.sv -section_id
 set_global_assignment -name EDA_TEST_BENCH_FILE hvl/source_tb.sv -section_id mp4_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE hvl/tb_itf.sv -section_id mp4_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE hvl/top.sv -section_id mp4_tb
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/cache/data_array.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/cache/cache_datapath.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/cache/cache_control.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/cache/cache.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/cache/array.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/l2cache/L2data_array.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/l2cache/L2cache_datapath.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/l2cache/L2cache_control.sv
@@ -77,11 +82,6 @@ set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/icache/Icache_datap
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/icache/Icache_control.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/icache/Icache.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/icache/Iarray.sv
-set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/Ddata_array.sv
-set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/Dcache_datapath.sv
-set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/Dcache_control.sv
-set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/Dcache.sv
-set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/Darray.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/cacheline_adaptor.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/cache_top.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/cache_mux_types.sv

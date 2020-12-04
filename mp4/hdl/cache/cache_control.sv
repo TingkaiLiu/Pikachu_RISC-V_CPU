@@ -79,7 +79,7 @@ begin : state_actions
                         domux_sel = domux::domux_sel_t'(hit1);
                     else if (mem_write == 1) begin
                         dimux_sel = dimux::mem_wdata256_from_cpu;
-                        wemux_sel[hit1] = wemux::mem_byte_enable256_from_cpu;
+                        wemux_sel[hit1] = wemux::mbe;
                         dirty_o[hit1] = 1'b1;
                         dirty_load[hit1] = 1'b1;
                     end
@@ -99,7 +99,7 @@ begin : state_actions
             if (lru_i == 1'b0)
             begin
                 wemux_sel[0] = wemux::ones;
-                dimux_sel = dimux::line_o_from_memory;   
+                dimux_sel = dimux::pmem_rdata_from_mem;   
                 pmem_read = 1'b1;
                 valid_o[0] = 1'b1;
                 valid_load[0] = 1'b1;
@@ -110,7 +110,7 @@ begin : state_actions
             else
             begin
                 wemux_sel[1] = wemux::ones;
-                dimux_sel = dimux::line_o_from_memory;   
+                dimux_sel = dimux::pmem_rdata_from_mem;   
                 pmem_read = 1'b1;
                 valid_o[1] = 1'b1;
                 valid_load[1] = 1'b1;
