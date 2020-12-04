@@ -101,7 +101,7 @@ begin : state_actions
 
                     if (mem_read)
                         domux_sel = domux::domux_sel_t'(hit_way_num);
-                    else if (mem_write) begin
+                    else begin
                         dimux_sel = dimux::mem_wdata256_from_cpu;
                         wemux_sel  [hit_way_num] = wemux::mbe;
                         dirty_load [hit_way_num] = 1'b1;
@@ -118,15 +118,13 @@ begin : state_actions
         read_back_state:
         begin
             pmem_read = 1'b1;
-            if (pmem_resp) begin
-                dimux_sel = dimux::pmem_rdata_from_mem;   
-                wemux_sel  [rpl_way_num] = wemux::ones;
-                valid_load [rpl_way_num] = 1'b1;
-                dirty_load [rpl_way_num] = 1'b1;
-                tag_load   [rpl_way_num] = 1'b1;
-                valid_o    [rpl_way_num] = 1'b1;
-                dirty_o    [rpl_way_num] = 1'b0;
-            end
+            dimux_sel = dimux::pmem_rdata_from_mem;   
+            wemux_sel  [rpl_way_num] = wemux::ones;
+            valid_load [rpl_way_num] = 1'b1;
+            dirty_load [rpl_way_num] = 1'b1;
+            tag_load   [rpl_way_num] = 1'b1;
+            valid_o    [rpl_way_num] = 1'b1;
+            dirty_o    [rpl_way_num] = 1'b0;
         end
         default: ;
     endcase
