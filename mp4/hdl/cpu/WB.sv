@@ -9,6 +9,7 @@ module WB
     input rst,
     input rv32i_ctrl_packet_t ctrl,
     input rv32i_packet_t wb_in,
+    input logic load_buffers,
 
     // Regfile
     output rv32i_word regfile_in,
@@ -20,7 +21,7 @@ rv32i_word regfilemux_out;
 
 assign regfile_in = dest ? regfilemux_out : 0; // won't write to x0
 assign dest = wb_in.inst.rd;
-assign load_regfile = wb_in.valid && ctrl.load_regfile;
+assign load_regfile = load_buffers && wb_in.valid && ctrl.load_regfile;
 
 rv32i_word alu_out;
 rv32i_word br_en;
