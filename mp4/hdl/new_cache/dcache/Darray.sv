@@ -1,6 +1,6 @@
 /* A register array to be used for tag arrays, LRU array, etc. */
 
-module array #(
+module Darray #(
     parameter s_index = 3,
     parameter width = 1
 )
@@ -33,4 +33,4 @@ always_ff @(posedge clk) begin
         data[windex] <= datain;
 end
 
-endmodule : array
+endmodule : Darray
