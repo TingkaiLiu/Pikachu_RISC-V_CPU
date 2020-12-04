@@ -56,6 +56,9 @@ set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH mp4_tb -section
 set_global_assignment -name EDA_TEST_BENCH_NAME mp4_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id mp4_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME mp4_tb -section_id mp4_tb
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name EDA_TEST_BENCH_FILE hvl/magic_dual_port.sv -section_id mp4_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE hvl/param_memory.sv -section_id mp4_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE hvl/rvfi_itf.sv -section_id mp4_tb
@@ -64,23 +67,25 @@ set_global_assignment -name EDA_TEST_BENCH_FILE hvl/shadow_memory.sv -section_id
 set_global_assignment -name EDA_TEST_BENCH_FILE hvl/source_tb.sv -section_id mp4_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE hvl/tb_itf.sv -section_id mp4_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE hvl/top.sv -section_id mp4_tb
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/l2cache/L2data_array.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/l2cache/L2cache_datapath.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/l2cache/L2cache_control.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/l2cache/L2cache.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/l2cache/L2array.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/icache/Idata_array.sv
-set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/icache/Iarray.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/icache/Icache_datapath.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/icache/Icache_control.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/icache/Icache.sv
-set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/cache_datapath.sv
-set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/cache_control.sv
-set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/cache.sv
-set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/data_array.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/icache/Iarray.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/Ddata_array.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/Dcache_datapath.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/Dcache_control.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/Dcache.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/dcache/Darray.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/cacheline_adaptor.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/cache_top.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/cache_mux_types.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/bus_adapter.sv
-set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/array.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/new_cache/arbiter.sv
 set_global_assignment -name SDC_FILE mp4.out.sdc
 set_global_assignment -name SYSTEMVERILOG_FILE hdl/cpu/branch_predictor/pht_array.sv
