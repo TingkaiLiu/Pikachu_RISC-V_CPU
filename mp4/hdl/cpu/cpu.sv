@@ -79,7 +79,7 @@ IF IF(.*);
 
 buffer IF_ID(
     .*, .load(load_pc), .buffer_sel(if_id_sel),
-    .packet_in_old(0), .packet_in_new(if_out), .packet_out(if_id)
+    .packet_in_old('0), .packet_in_new(if_out), .packet_out(if_id)
 );
 
 ID ID(.*);
