@@ -205,7 +205,6 @@ begin : state_actions
         begin
             set_curr_hit();
             pmem_write = 1'b1;
-            ndirty_o    [prefetch_rpl_way_num] = 1'b0;
             pwdatamux_sel = pwdatamux::pwdatamux_sel_t'(prefetch_rpl_way_num);
             paddrmux_sel = paddrmux::paddrmux_sel_t'(prefetch_rpl_way_num);
         end

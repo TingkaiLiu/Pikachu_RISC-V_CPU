@@ -50,7 +50,7 @@ llc_cacheline mmem_wdata;
 logic mmem_resp;
 rv32i_word mmem_address;
 
-Icache Icache(
+cache Icache(
     .*,
     // CPU
     .mem_address        (inst_mem_address),
