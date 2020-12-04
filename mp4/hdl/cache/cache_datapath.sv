@@ -172,20 +172,20 @@ always_comb begin : MUXES
     unique case (wemux_sel[0])
         wemux::zeros: wemux_out[0] = {s_mask{1'b0}};
         wemux::ones:  wemux_out[0] = {s_mask{1'b1}};
-        wemux::mem_byte_enable256_from_cpu: wemux_out[0] = mem_byte_enable256;
+        wemux::mbe: wemux_out[0] = mem_byte_enable256;
         default: wemux_out[0] = {s_mask{1'b0}};
     endcase
 
     unique case (wemux_sel[1])
         wemux::zeros: wemux_out[1] = {s_mask{1'b0}};
         wemux::ones:  wemux_out[1] = {s_mask{1'b1}};
-        wemux::mem_byte_enable256_from_cpu: wemux_out[1] = mem_byte_enable256;
+        wemux::mbe: wemux_out[1] = mem_byte_enable256;
         default: wemux_out[1] = {s_mask{1'b0}};
     endcase
 
     unique case(dimux_sel)
         dimux::mem_wdata256_from_cpu: dimux_out = mem_wdata256;
-        dimux::line_o_from_memory: dimux_out = pmem_rdata;
+        dimux::pmem_rdata_from_mem: dimux_out = pmem_rdata;
         default: dimux_out = mem_wdata256;
     endcase
 
