@@ -75,9 +75,9 @@ begin : state_actions
                     lru_o = hit0;
                     lru_load = 1'b1;
                     mem_resp = 1'b1;
-                    if (mem_read == 1)
+                    if (mem_read)
                         domux_sel = domux::domux_sel_t'(hit1);
-                    else if (mem_write == 1) begin
+                    else begin
                         dimux_sel = dimux::mem_wdata256_from_cpu;
                         wemux_sel[hit1] = wemux::mbe;
                         dirty_o[hit1] = 1'b1;
@@ -89,14 +89,14 @@ begin : state_actions
         begin
             domux_sel = domux::domux_sel_t'(lru_i);
             pmem_write = 1'b1;
-            if (lru_i == 0)
+            if (!lru_i)
                 addrmux_sel = addrmux::cache_0;
             else
                 addrmux_sel = addrmux::cache_1;
         end
         read_back_state:
         begin
-            if (lru_i == 1'b0)
+            if (!lru_i)
             begin
                 wemux_sel[0] = wemux::ones;
                 dimux_sel = dimux::pmem_rdata_from_mem;   
@@ -131,10 +131,9 @@ begin : next_state_logic
      case (state)
         hit_check_state:
             if (mem_read || mem_write) begin
-                if (hit0 || hit1)
-                    next_state = hit_check_state;
-                else begin
-                    if (dirty_i[lru_i] == 1 && valid_i[lru_i] == 1)
+                if (!(hit0 || hit1))
+                begin
+                    if (dirty_i[lru_i] && valid_i[lru_i])
                         next_state = write_back_state;
                     else
                         next_state = read_back_state;
@@ -143,13 +142,9 @@ begin : next_state_logic
         write_back_state:
             if (pmem_resp)
                 next_state = read_back_state;
-            else
-                next_state = write_back_state;
         read_back_state:
             if (pmem_resp)
                 next_state = hit_check_state;
-            else
-                next_state = read_back_state;
         default: ;
      endcase
 end
