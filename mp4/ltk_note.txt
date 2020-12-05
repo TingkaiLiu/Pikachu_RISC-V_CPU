@@ -84,4 +84,10 @@ ooo:
     Queue to memory
     Queue to commit
     How to represent dependency?
+
+2020.12.5
+    Bug:
+        When mis-predict and stall happen at the same time
+        correct_pc_prediction will be ignored by IF, IF_ID and ID since EX moves
+        Fix: add checking for correct prediction when determining stall
         
