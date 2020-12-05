@@ -70,7 +70,7 @@ always_comb begin
     
     // rs1
     if (rs1) begin // won't forward for x0
-        if (id_ex.valid && id_ex.ctrl.wb && id_ex.ctrl.mem && rs1 == id_ex.inst.rd) begin
+        if (correct_pc_prediction && id_ex.valid && id_ex.ctrl.wb && id_ex.ctrl.mem && rs1 == id_ex.inst.rd) begin
             id_ex_sel = buffer_load_mux::load_invalid;
             load_pc = 0;
         end
@@ -78,7 +78,7 @@ always_comb begin
 
     // rs2
     if (rs2) begin // won't forward for x0
-        if (id_ex.valid && id_ex.ctrl.wb && id_ex.ctrl.mem && rs2 == id_ex.inst.rd) begin
+        if (correct_pc_prediction && id_ex.valid && id_ex.ctrl.wb && id_ex.ctrl.mem && rs2 == id_ex.inst.rd) begin
             id_ex_sel = buffer_load_mux::load_invalid;
             load_pc = 0;
         end
