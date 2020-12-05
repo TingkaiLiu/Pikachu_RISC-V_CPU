@@ -2,7 +2,7 @@ import rv32i_types::*;
 import rv32i_packet::*;
 
 module branch_predictor #(
-    parameter s_bhr = 10
+    parameter s_bhr = 8
 )
 (
     clk,
@@ -42,7 +42,8 @@ assign actl_take = (wb_pkt.data.pc + 4 == wb_pkt.data.next_pc) ? 1'b0 : 1'b1;
 logic update;
 assign update = (load_buffers && wb_pkt.valid && 
     ((wb_pkt.inst.opcode == op_br) || (wb_pkt.inst.opcode == op_jal) || (wb_pkt.inst.opcode == op_jalr))) ? 1'b1 : 1'b0;
-assign rindex = wb_pkt.data.pc[s_bhr-1:0] ^ bhr_out; // TODO: delete ^ if not needed
+// assign rindex = wb_pkt.data.pc[s_bhr-1:0] ^ bhr_out; // TODO: delete ^ if not needed
+assign rindex = wb_pkt.data.pc[s_bhr-1:0];
 
 // update logic
 always_ff @(posedge clk) begin
