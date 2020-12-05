@@ -76,22 +76,22 @@ begin
 end
 
 // lru
-logic [s_index-1:0] windex;
+// logic [s_index-1:0] windex;
 logic [2:0] lru_i;
 logic lru_load;
 always_ff @(posedge clk) begin
     if (mem_read || mem_write) begin
         case (hit_o)
-            4'b0001: begin windex <= set; lru_i[1] <= 1'b0; lru_i[0] <= 1'b0; lru_i[2] <= lru_o[2]; lru_load <= 1'b1; end
-            4'b0010: begin windex <= set; lru_i[1] <= 1'b1; lru_i[0] <= 1'b0; lru_i[2] <= lru_o[2]; lru_load <= 1'b1; end
-            4'b0100: begin windex <= set; lru_i[2] <= 1'b0; lru_i[0] <= 1'b1; lru_i[1] <= lru_o[1]; lru_load <= 1'b1; end
-            4'b1000: begin windex <= set; lru_i[2] <= 1'b1; lru_i[0] <= 1'b1; lru_i[1] <= lru_o[1]; lru_load <= 1'b1; end
+            4'b0001: begin lru_i[1] <= 1'b0; lru_i[0] <= 1'b0; lru_i[2] <= lru_o[2]; lru_load <= 1'b1; end
+            4'b0010: begin lru_i[1] <= 1'b1; lru_i[0] <= 1'b0; lru_i[2] <= lru_o[2]; lru_load <= 1'b1; end
+            4'b0100: begin lru_i[2] <= 1'b0; lru_i[0] <= 1'b1; lru_i[1] <= lru_o[1]; lru_load <= 1'b1; end
+            4'b1000: begin lru_i[2] <= 1'b1; lru_i[0] <= 1'b1; lru_i[1] <= lru_o[1]; lru_load <= 1'b1; end
             default: begin lru_i <= lru_o; lru_load <= 1'b0; end
         endcase
     end
 end
 
-L2array #(s_index, 3) LRUA(.clk, .load(lru_load), .rindex(set), .windex(windex), .datain(lru_i), .dataout(lru_o));
+L2array #(s_index, 3) LRUA(.clk, .load(lru_load), .rindex(set), .windex(set), .datain(lru_i), .dataout(lru_o));
 
 L2data_array DataA0(.clk, .write_en(wemux_out[0]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[0]));
 L2data_array DataA1(.clk, .write_en(wemux_out[1]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[1]));

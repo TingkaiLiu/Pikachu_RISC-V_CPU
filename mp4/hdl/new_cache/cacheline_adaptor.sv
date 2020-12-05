@@ -48,54 +48,30 @@ begin
     case (state)
         Wait:
         begin
-            if (read_i == 0 && write_i == 0)
-                next_state = Wait;
-            else if (read_i == 1)
+            if (read_i)
                 next_state = Read_0;
-            else if (write_i == 1)
+            else if (write_i)
                 next_state = Write_0;
         end
         Read_0:
-            if (resp_i == 1)
+            if (resp_i)
                 next_state = Read_1;
-            else
-                next_state = Read_0;
         Read_1:
-            if (resp_i == 1)
-                next_state = Read_2;
-            else
-                next_state = Read_1;
+            next_state = Read_2;
         Read_2:
-            if (resp_i == 1)
-                next_state = Read_3;
-            else
-                next_state = Read_2;
+            next_state = Read_3;
         Read_3:
-            if (resp_i == 1)
-                next_state = Finish_Read;
-            else
-                next_state = Read_3;
+            next_state = Finish_Read;
         
         Write_0:
-            if (resp_i == 1)
+            if (resp_i)
                 next_state = Write_1;
-            else
-                next_state = Write_0;
         Write_1:
-            if (resp_i == 1)
-                next_state = Write_2;
-            else
-                next_state = Write_1;
+            next_state = Write_2;
         Write_2:
-            if (resp_i == 1)
-                next_state = Write_3;
-            else
-                next_state = Write_2;
+            next_state = Write_3;
         Write_3:
-            if (resp_i == 1)
-                next_state = Finish_Write;
-            else
-                next_state = Write_3;
+            next_state = Finish_Write;
 
         Finish_Read:  next_state = Wait;
         Finish_Write: next_state = Wait;
