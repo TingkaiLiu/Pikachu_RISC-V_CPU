@@ -66,7 +66,7 @@ rv32i_word in_address, cache_address0, cache_address1;
 always_ff @ (posedge clk) begin
     cache_address0 <= {tag_out[0], set, 5'b0};
     cache_address1 <= {tag_out[1], set, 5'b0};
-    in_address <= {address_i[31:s_offset], 5'b0}
+    in_address <= {address_i[31:s_offset], 5'b0};
     _data_out <= data_out;
 end
 
