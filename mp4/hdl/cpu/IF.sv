@@ -14,6 +14,11 @@ module IF
     input rv32i_word alu_out,
     input logic correct_pc_prediction,
 
+    // Branch prediction
+    output rv32i_word current_pc,
+    input rv32i_word predict_next_pc,
+    input rv32i_word correct_next_pc,
+
     // I-cache
     output rv32i_word inst_mem_address,
     input rv32i_word inst_mem_rdata,
@@ -25,6 +30,8 @@ module IF
 rv32i_word pcmux_out;
 rv32i_word pc_out;
 
+assign current_pc = pc_out;
+
 assign inst_mem_address = pc_out;
 assign inst_mem_byte_enable = 0;
 
@@ -32,7 +39,7 @@ assign if_out.data.pc = pc_out;
 assign if_out.data.instruction = inst_mem_rdata;
 
 assign if_out.valid = correct_pc_prediction;
-assign if_out.data.next_pc = pc_out + 4; // TODO: Change after added branch prediction
+assign if_out.data.next_pc = predict_next_pc; 
 
 
 pc_register PC
@@ -46,10 +53,11 @@ pc_register PC
 always_comb begin : PCMUX
 	pcmux_out = pc_out;
     unique case (pcmux_sel)
-        pcmux::pc_plus4: pcmux_out = pc_out + 4;
-        pcmux::alu_out: pcmux_out = alu_out;
-        pcmux::alu_mod2: pcmux_out = {alu_out[31:1], 1'b0};
-        default: pcmux_out = pc_out + 4;
+        pcmux::correct: pcmux_out = correct_next_pc;
+        // pcmux::alu_out: pcmux_out = alu_out;
+        // pcmux::alu_mod2: pcmux_out = {alu_out[31:1], 1'b0};
+        pcmux::predict: pcmux_out = predict_next_pc;
+        default: pcmux_out = pc_out + 4; // Should not be reached
     endcase
 end : PCMUX
 

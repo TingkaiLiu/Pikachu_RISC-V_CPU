@@ -30,6 +30,7 @@ module cpu_control(
 
     // Special: from EX
     input logic br_en,
+    input correct_pc_prediction,
 
     // Stages
     output pcmux::pcmux_sel_t pcmux_sel, // IF control: only useful for handling branch 
@@ -88,19 +89,20 @@ end
 assign inst_mem_read = 1'b1;
 assign inst_mem_write = 1'b0;
 
-always_comb begin
-    pcmux_sel = pcmux::pc_plus4;
+assign pcmux_sel = (!correct_pc_prediction && id_ex.valid) ? pcmux::correct : pcmux::predict;
+// always_comb begin
+//     pcmux_sel = pcmux::predict;
 
-    if (id_ex.valid) begin
-        case (id_ex.inst.opcode)
-            op_jal: pcmux_sel = pcmux::alu_out;
-            op_jalr: pcmux_sel = pcmux::alu_mod2;
-            op_br: if (br_en) pcmux_sel = pcmux::alu_out;
-            default: ;
-        endcase
-    end
+//     if (!correct_pc_prediction && id_ex.valid) begin
+//         case (id_ex.inst.opcode)
+//             op_jal: pcmux_sel = pcmux::alu_out;
+//             op_jalr: pcmux_sel = pcmux::alu_mod2;
+//             op_br: pcmux_sel = pcmux::alu_out;
+//             default: pcmux_sel = pcmux::pc_plus4;
+//         endcase
+//     end
     
-end
+// end
 
 // EX
 assign ex_ctrl = id_ex.ctrl;

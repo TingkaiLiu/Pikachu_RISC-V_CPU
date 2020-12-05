@@ -1,10 +1,12 @@
-/* DO NOT MODIFY. WILL BE OVERRIDDEN BY THE AUTOGRADER. */
 
 package pcmux;
 typedef enum bit [1:0] {
-    pc_plus4  = 2'b00
-    ,alu_out  = 2'b01
-    ,alu_mod2 = 2'b10
+    // pc_plus4  = 2'b00
+    // ,alu_out  = 2'b01
+    // ,alu_mod2 = 2'b10
+    // ,predict = 2'b11
+    predict = 2'b00
+    ,correct = 2'b11
 } pcmux_sel_t;
 endpackage
 
