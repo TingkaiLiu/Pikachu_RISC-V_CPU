@@ -50,11 +50,11 @@ logic [s_tag-1:0] tag_out [1:0];
 
 logic [s_mask-1:0] wemux_out [1:0];
 logic [s_line-1:0] dimux_out;
-logic [s_line-1:0] domux_out;
-logic [s_line-1:0] data_out[1:0], _data_out[1:0]; // _ for ff
+logic [s_line-1:0] domux_out, domux_out_buf;
+logic [s_line-1:0] data_out[1:0], _data_out[1:0]; //_ for buf
 
 assign mem_rdata256 = domux_out;
-assign pmem_wdata = domux_out;
+assign pmem_wdata = domux_out_buf;
 
 assign offset = address_i[s_offset-1:0];
 assign set = address_i[s_offset+s_index-1:s_offset];
@@ -173,7 +173,8 @@ always_comb begin : MUXES
 	 wemux_out[0] = {s_mask{1'b0}};
 	 wemux_out[1] = {s_mask{1'b0}};
 	 dimux_out = mem_wdata256;
-     domux_out = _data_out[0];
+     domux_out = data_out[0];
+     domux_out_buf = _data_out[0];
      pmem_address = in_address;
     unique case (wemux_sel[0])
         wemux::zeros: wemux_out[0] = {s_mask{1'b0}};
@@ -196,9 +197,15 @@ always_comb begin : MUXES
     endcase
 
     unique case(domux_sel)
-        domux::data_array_0: domux_out = _data_out[0];
-        domux::data_array_1: domux_out = _data_out[1];
-        default: domux_out = _data_out[0];
+        domux::data_array_0: domux_out = data_out[0];
+        domux::data_array_1: domux_out = data_out[1];
+        default: domux_out = data_out[0];
+    endcase
+
+    unique case(domux_sel)
+        domux::data_array_0: domux_out_buf = _data_out[0];
+        domux::data_array_1: domux_out_buf = _data_out[1];
+        default: domux_out_buf = _data_out[0];
     endcase
 
     unique case(addrmux_sel)
