@@ -34,7 +34,7 @@ assign dataout = _dataout;
 
 always_comb begin
     for (int i = 0; i < s_mask; i++) begin
-        _dataout[8*i +: 8] <= (write_en[i] & (rindex == windex)) ? datain[8*i +: 8] : data[rindex][8*i +: 8];
+        _dataout[8*i +: 8] <= write_en[i] ? datain[8*i +: 8] : data[rindex][8*i +: 8];
     end
 end
 
