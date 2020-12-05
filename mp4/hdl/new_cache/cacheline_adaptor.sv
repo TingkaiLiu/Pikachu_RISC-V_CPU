@@ -24,6 +24,7 @@ enum logic [8:0] {Wait, Finish_Read, Finish_Write, Read_0, Read_1, Read_2, Read_
 
 logic [255:0] line_o_next;
 logic [31:0] address_o_next;
+logic [255:0] line_i_buf;
 
 always_ff @(posedge clk)
 begin
@@ -32,12 +33,14 @@ begin
         state <= Wait;
         line_o <= 256'b0;
         address_o <= 32'b0;
+        line_i_buf <= 256'b0;
     end
     else
     begin
         state <= next_state;
         line_o <= line_o_next;
         address_o <= address_o_next;
+        line_i_buf <= line_i;
     end
 end
 
@@ -119,25 +122,25 @@ begin
         begin
             write_o = 1'b1;
             address_o_next = address_i;
-            burst_o = line_i[63:0];
+            burst_o = line_i_buf[63:0];
         end
         Write_1:
         begin
             write_o = 1'b1;
             address_o_next = address_i;
-            burst_o = line_i[127:64];
+            burst_o = line_i_buf[127:64];
         end
         Write_2:
         begin
             write_o = 1'b1;
             address_o_next = address_i;
-            burst_o = line_i[191:128];
+            burst_o = line_i_buf[191:128];
         end
         Write_3:
         begin
             write_o = 1'b1;
             address_o_next = address_i;
-            burst_o = line_i[255:192];
+            burst_o = line_i_buf[255:192];
         end
 
         Finish_Read:
