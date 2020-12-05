@@ -15,10 +15,7 @@ module EX
     output logic br_en,
     output rv32i_word alu_out,
     output logic correct_pc_prediction,
-    
-    // From other stages
-    input rv32i_word from_exmem,
-    input rv32i_word from_memwb
+    output rv32i_word correct_next_pc
 );
 
 rv32i_word alumux1_out;
@@ -28,6 +25,7 @@ rv32i_word cmpmux_out;
 assign ex_out.data.alu_out = alu_out;
 assign ex_out.data.br_en = br_en;
 assign ex_out.data.correct_pc_prediction = correct_pc_prediction;
+assign correct_next_pc = ex_out.data.next_pc;
 
 // Handle control hazard
 always_comb begin
@@ -49,8 +47,15 @@ always_comb begin
                     correct_pc_prediction = (alu_out == ex_in.data.next_pc);
                     ex_out.data.next_pc = alu_out;
                 end
+                else begin
+                    correct_pc_prediction = (ex_in.data.next_pc == (ex_in.data.pc + 4));
+                    ex_out.data.next_pc = ex_in.data.pc + 4;
+                end
             end 
-            default: ;
+            default: begin // All non-branch inst, target should be pc+4
+                correct_pc_prediction = (ex_in.data.next_pc == (ex_in.data.pc + 4));
+                ex_out.data.next_pc = ex_in.data.pc + 4;
+            end
         endcase
     end
     
