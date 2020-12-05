@@ -101,7 +101,7 @@ begin : state_actions
 
                     if (mem_read)
                         domux_sel = domux::domux_sel_t'(hit_way_num);
-                    else if (mem_write) begin
+                    else begin
                         dimux_sel = dimux::mem_wdata256_from_cpu;
                         wemux_sel  [hit_way_num] = wemux::mbe;
                         dirty_load [hit_way_num] = 1'b1;
