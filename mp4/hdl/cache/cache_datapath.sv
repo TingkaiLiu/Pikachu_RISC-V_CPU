@@ -61,12 +61,12 @@ assign set = address_i[s_offset+s_index-1:s_offset];
 assign tag = address_i[31:s_offset+s_index];
 
 rv32i_word in_address, cache_address0, cache_address1;
-assign in_address = {address_i[31:s_offset], 5'b0};
 
 // For cutting crtical path: buffer the address and data to mem
 always_ff @ (posedge clk) begin
     cache_address0 <= {tag_out[0], set, 5'b0};
     cache_address1 <= {tag_out[1], set, 5'b0};
+    in_address <= {address_i[31:s_offset], 5'b0}
     _data_out <= data_out;
 end
 
