@@ -140,7 +140,7 @@ begin : next_state_logic
      case (state)
         hit_check_state:
             if (mem_read || mem_write) begin
-                if (hit_i == 4'b0000) begin
+                if (!hit_i) begin
                     if (dirty_i[rpl_way_num] && valid_i[rpl_way_num])
                         next_state = write_back_state;
                     else

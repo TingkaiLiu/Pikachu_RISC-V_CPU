@@ -98,12 +98,12 @@ begin : state_actions
         wait_state: ;
         hit_check_state:
             if (mem_read || mem_write) begin
-                if (hit_i != 4'b0000) begin
+                if (hit_i) begin
                     mem_resp = 1'b1;
 
                     if (mem_read)
                         domux_sel = domux::domux_sel_t'(hit_way_num);
-                    else if (mem_write) begin
+                    else begin
                         dimux_sel = dimux::mem_wdata256_from_cpu;
                         wemux_sel  [hit_way_num] = wemux::mbe;
                         dirty_load [hit_way_num] = 1'b1;
@@ -146,7 +146,7 @@ begin : next_state_logic
                 next_state = hit_check_state;
         end
         hit_check_state: 
-            if (hit_i == 4'b0000) begin
+            if (!hit_i) begin
                 if (dirty_i[rpl_way_num] && valid_i[rpl_way_num])
                     next_state = write_back_state;
                 else
