@@ -66,8 +66,7 @@ always_comb begin
             ctrl.mem = 0;
 
             ctrl.wb = 1;
-            ctrl.load_regfile = 1;
-            ctrl.regfilemux_sel = regfilemux::u_imm;
+            loadRegfile(regfilemux::u_imm);
         end
         op_auipc: begin
             ctrl.ex = 1;

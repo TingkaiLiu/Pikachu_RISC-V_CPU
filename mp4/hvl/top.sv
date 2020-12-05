@@ -31,9 +31,7 @@ rv32i_packet_t wb_pkt;
 assign wb_pkt = dut.cpu.WB.wb_in;
 
 assign rvfi.commit = dut.cpu.load_buffers && wb_pkt.valid; // Set high when a valid instruction is modifying regfile or PC
-assign rvfi.halt = wb_pkt.inst.opcode == op_br && 
-                    (wb_pkt.inst.rs1 == wb_pkt.inst.rs2) && 
-                    (wb_pkt.data.pc == wb_pkt.data.alu_out);  // Set high when you detect an infinite loop
+assign rvfi.halt = wb_pkt.valid && (wb_pkt.data.pc == wb_pkt.data.next_pc); // Set high when you detect an infinite loop
 initial rvfi.order = 0;
 always @(posedge itf.clk iff rvfi.commit) rvfi.order <= rvfi.order + 1; // Modify for OoO
 
@@ -109,13 +107,13 @@ assign itf.inst_read  = dut.cache_top.Icache.mem_read;
 assign itf.inst_addr  = dut.cache_top.Icache.mem_address;
 assign itf.inst_resp  = dut.cache_top.Icache.mem_resp;
 assign itf.inst_rdata = dut.cache_top.Icache.mem_rdata;
-assign itf.data_read  = dut.cache_top.Dcache.mem_read;
-assign itf.data_write = dut.cache_top.Dcache.mem_write;
-assign itf.data_mbe   = dut.cache_top.Dcache.mem_byte_enable;
-assign itf.data_addr  = dut.cache_top.Dcache.mem_address;
-assign itf.data_wdata = dut.cache_top.Dcache.mem_wdata;
-assign itf.data_resp  = dut.cache_top.Dcache.mem_resp;
-assign itf.data_rdata = dut.cache_top.Dcache.mem_rdata;
+assign itf.data_read  = dut.cache_top.Dcache1.mem_read;
+assign itf.data_write = dut.cache_top.Dcache1.mem_write;
+assign itf.data_mbe   = dut.cache_top.Dcache1.mem_byte_enable;
+assign itf.data_addr  = dut.cache_top.Dcache1.mem_address;
+assign itf.data_wdata = dut.cache_top.Dcache1.mem_wdata;
+assign itf.data_resp  = dut.cache_top.Dcache1.mem_resp;
+assign itf.data_rdata = dut.cache_top.Dcache1.mem_rdata;
 
 /*********************** End Shadow Memory Assignments ***********************/
 

@@ -50,20 +50,26 @@ logic [s_tag-1:0] tag_out [1:0];
 
 logic [s_mask-1:0] wemux_out [1:0];
 logic [s_line-1:0] dimux_out;
-logic [s_line-1:0] domux_out;
-logic [s_line-1:0] data_out [1:0];
+logic [s_line-1:0] domux_out, domux_out_buf;
+logic [s_line-1:0] data_out[1:0], _data_out[1:0]; //_ for buf
 
 assign mem_rdata256 = domux_out;
-assign pmem_wdata = domux_out;
+assign pmem_wdata = domux_out_buf;
 
 assign offset = address_i[s_offset-1:0];
 assign set = address_i[s_offset+s_index-1:s_offset];
 assign tag = address_i[31:s_offset+s_index];
 
 rv32i_word in_address, cache_address0, cache_address1;
-assign in_address = {address_i[31:s_offset], 5'b0};
-assign cache_address0 = {tag_out[0], set, 5'b0};
-assign cache_address1 = {tag_out[1], set, 5'b0};
+
+// For cutting crtical path: buffer the address and data to mem
+always_ff @ (posedge clk) begin
+    cache_address0 <= {tag_out[0], set, 5'b0};
+    cache_address1 <= {tag_out[1], set, 5'b0};
+    in_address <= {address_i[31:s_offset], 5'b0};
+    _data_out <= data_out;
+end
+
 
 always_comb
 begin
@@ -168,24 +174,25 @@ always_comb begin : MUXES
 	 wemux_out[1] = {s_mask{1'b0}};
 	 dimux_out = mem_wdata256;
      domux_out = data_out[0];
+     domux_out_buf = _data_out[0];
      pmem_address = in_address;
     unique case (wemux_sel[0])
         wemux::zeros: wemux_out[0] = {s_mask{1'b0}};
         wemux::ones:  wemux_out[0] = {s_mask{1'b1}};
-        wemux::mem_byte_enable256_from_cpu: wemux_out[0] = mem_byte_enable256;
+        wemux::mbe: wemux_out[0] = mem_byte_enable256;
         default: wemux_out[0] = {s_mask{1'b0}};
     endcase
 
     unique case (wemux_sel[1])
         wemux::zeros: wemux_out[1] = {s_mask{1'b0}};
         wemux::ones:  wemux_out[1] = {s_mask{1'b1}};
-        wemux::mem_byte_enable256_from_cpu: wemux_out[1] = mem_byte_enable256;
+        wemux::mbe: wemux_out[1] = mem_byte_enable256;
         default: wemux_out[1] = {s_mask{1'b0}};
     endcase
 
     unique case(dimux_sel)
         dimux::mem_wdata256_from_cpu: dimux_out = mem_wdata256;
-        dimux::line_o_from_memory: dimux_out = pmem_rdata;
+        dimux::pmem_rdata_from_mem: dimux_out = pmem_rdata;
         default: dimux_out = mem_wdata256;
     endcase
 
@@ -193,6 +200,12 @@ always_comb begin : MUXES
         domux::data_array_0: domux_out = data_out[0];
         domux::data_array_1: domux_out = data_out[1];
         default: domux_out = data_out[0];
+    endcase
+
+    unique case(domux_sel)
+        domux::data_array_0: domux_out_buf = _data_out[0];
+        domux::data_array_1: domux_out_buf = _data_out[1];
+        default: domux_out_buf = _data_out[0];
     endcase
 
     unique case(addrmux_sel)

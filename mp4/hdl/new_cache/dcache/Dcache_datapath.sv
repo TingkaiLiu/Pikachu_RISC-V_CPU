@@ -3,7 +3,7 @@ valid, dirty, tag, and LRU arrays, comparators, muxes,
 logic gates and other supporting logic. */
 import rv32i_types::*;
 
-module cache_datapath #(
+module Dcache_datapath #(
     parameter s_offset = 5,
     parameter s_index  = 3,
     parameter s_tag    = 32 - s_offset - s_index,
@@ -19,11 +19,9 @@ module cache_datapath #(
     input domux::domux_sel_t domux_sel,
     input addrmux::addrmux_sel_t addrmux_sel,
     input wemux::wemux_sel_t wemux_sel [3:0],
-    input logic lru_load,
     input logic [3:0] valid_load,
     input logic [3:0] dirty_load,
     input logic [3:0] tag_load,
-    input logic [2:0] lru_i,
     input logic [3:0] valid_i,
     input logic [3:0] dirty_i,
     // to controller
@@ -33,6 +31,8 @@ module cache_datapath #(
     output logic [3:0] hit_o,
     // CPU
     input rv32i_word address_i,
+    input logic mem_read,
+    input logic mem_write,
     // bus adaptor
     input rv32i_word mem_byte_enable256,
     input llc_cacheline mem_wdata256,
@@ -75,27 +75,43 @@ begin
     end
 end
 
-array #(s_index, 3) LRUA(.clk, .load(lru_load), .rindex(set), .windex(set), .datain(lru_i), .dataout(lru_o));
+// lru
+// logic [s_index-1:0] windex;
+logic [2:0] lru_i;
+logic lru_load;
+always_ff @(posedge clk) begin
+    if (mem_read || mem_write) begin
+        case (hit_o)
+            4'b0001: begin lru_i[1] <= 1'b0; lru_i[0] <= 1'b0; lru_i[2] <= lru_o[2]; lru_load <= 1'b1; end
+            4'b0010: begin lru_i[1] <= 1'b1; lru_i[0] <= 1'b0; lru_i[2] <= lru_o[2]; lru_load <= 1'b1; end
+            4'b0100: begin lru_i[2] <= 1'b0; lru_i[0] <= 1'b1; lru_i[1] <= lru_o[1]; lru_load <= 1'b1; end
+            4'b1000: begin lru_i[2] <= 1'b1; lru_i[0] <= 1'b1; lru_i[1] <= lru_o[1]; lru_load <= 1'b1; end
+            default: begin lru_i <= lru_o; lru_load <= 1'b0; end
+        endcase
+    end
+end
 
-data_array DataA0(.clk, .write_en(wemux_out[0]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[0]));
-data_array DataA1(.clk, .write_en(wemux_out[1]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[1]));
-data_array DataA2(.clk, .write_en(wemux_out[2]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[2]));
-data_array DataA3(.clk, .write_en(wemux_out[3]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[3]));
+Darray #(s_index, 3) LRUA(.clk, .load(lru_load), .rindex(set), .windex(set), .datain(lru_i), .dataout(lru_o));
 
-array ValidA0(.clk, .load(valid_load[0]), .rindex(set), .windex(set), .datain(valid_i[0]), .dataout(valid_o[0]));
-array ValidA1(.clk, .load(valid_load[1]), .rindex(set), .windex(set), .datain(valid_i[1]), .dataout(valid_o[1]));
-array ValidA2(.clk, .load(valid_load[2]), .rindex(set), .windex(set), .datain(valid_i[2]), .dataout(valid_o[2]));
-array ValidA3(.clk, .load(valid_load[3]), .rindex(set), .windex(set), .datain(valid_i[3]), .dataout(valid_o[3]));
+Ddata_array DataA0(.clk, .write_en(wemux_out[0]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[0]));
+Ddata_array DataA1(.clk, .write_en(wemux_out[1]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[1]));
+Ddata_array DataA2(.clk, .write_en(wemux_out[2]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[2]));
+Ddata_array DataA3(.clk, .write_en(wemux_out[3]), .rindex(set), .windex(set), .datain(dimux_out), .dataout(data_out[3]));
 
-array DirtyA0(.clk, .load(dirty_load[0]), .rindex(set), .windex(set), .datain(dirty_i[0]), .dataout(dirty_o[0]));
-array DirtyA1(.clk, .load(dirty_load[1]), .rindex(set), .windex(set), .datain(dirty_i[1]), .dataout(dirty_o[1]));
-array DirtyA2(.clk, .load(dirty_load[2]), .rindex(set), .windex(set), .datain(dirty_i[2]), .dataout(dirty_o[2]));
-array DirtyA3(.clk, .load(dirty_load[3]), .rindex(set), .windex(set), .datain(dirty_i[3]), .dataout(dirty_o[3]));
+Darray ValidA0(.clk, .load(valid_load[0]), .rindex(set), .windex(set), .datain(valid_i[0]), .dataout(valid_o[0]));
+Darray ValidA1(.clk, .load(valid_load[1]), .rindex(set), .windex(set), .datain(valid_i[1]), .dataout(valid_o[1]));
+Darray ValidA2(.clk, .load(valid_load[2]), .rindex(set), .windex(set), .datain(valid_i[2]), .dataout(valid_o[2]));
+Darray ValidA3(.clk, .load(valid_load[3]), .rindex(set), .windex(set), .datain(valid_i[3]), .dataout(valid_o[3]));
 
-array #(s_index, s_tag) TagA0 (.clk, .load(tag_load[0]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[0]));
-array #(s_index, s_tag) TagA1 (.clk, .load(tag_load[1]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[1]));
-array #(s_index, s_tag) TagA2 (.clk, .load(tag_load[2]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[2]));
-array #(s_index, s_tag) TagA3 (.clk, .load(tag_load[3]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[3]));
+Darray DirtyA0(.clk, .load(dirty_load[0]), .rindex(set), .windex(set), .datain(dirty_i[0]), .dataout(dirty_o[0]));
+Darray DirtyA1(.clk, .load(dirty_load[1]), .rindex(set), .windex(set), .datain(dirty_i[1]), .dataout(dirty_o[1]));
+Darray DirtyA2(.clk, .load(dirty_load[2]), .rindex(set), .windex(set), .datain(dirty_i[2]), .dataout(dirty_o[2]));
+Darray DirtyA3(.clk, .load(dirty_load[3]), .rindex(set), .windex(set), .datain(dirty_i[3]), .dataout(dirty_o[3]));
+
+Darray #(s_index, s_tag) TagA0 (.clk, .load(tag_load[0]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[0]));
+Darray #(s_index, s_tag) TagA1 (.clk, .load(tag_load[1]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[1]));
+Darray #(s_index, s_tag) TagA2 (.clk, .load(tag_load[2]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[2]));
+Darray #(s_index, s_tag) TagA3 (.clk, .load(tag_load[3]), .rindex(set), .windex(set), .datain(tag), .dataout(tag_out[3]));
 
 always_comb begin : MUXES
     wemux_out[0] = {s_mask{1'b0}};
@@ -139,4 +155,4 @@ always_comb begin : MUXES
 
 end
 
-endmodule : cache_datapath
+endmodule : Dcache_datapath
