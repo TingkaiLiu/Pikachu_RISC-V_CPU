@@ -136,10 +136,10 @@ dcache signals:
 
 Please refer to tb_itf.sv for more information.
 */
-assign itf.inst_read  = dut.cache_top.Icache.mem_read;
-assign itf.inst_addr  = dut.cache_top.Icache.mem_address;
-assign itf.inst_resp  = dut.cache_top.Icache.mem_resp;
-assign itf.inst_rdata = dut.cache_top.Icache.mem_rdata;
+assign itf.inst_read  = dut.cache_top.Icache1.mem_read;
+assign itf.inst_addr  = dut.cache_top.Icache1.mem_address;
+assign itf.inst_resp  = dut.cache_top.Icache1.mem_resp;
+assign itf.inst_rdata = dut.cache_top.Icache1.mem_rdata;
 assign itf.data_read  = dut.cache_top.Dcache1.mem_read;
 assign itf.data_write = dut.cache_top.Dcache1.mem_write;
 assign itf.data_mbe   = dut.cache_top.Dcache1.mem_byte_enable;

@@ -38,6 +38,7 @@ always_comb begin
             packet_in.data.pc = packet_in_new.data.pc;
             packet_in.data.instruction = packet_in_new.data.instruction;
             packet_in.data.next_pc = packet_in_new.data.next_pc;
+            packet_in.data.predicted_pc = packet_in_new.data.predicted_pc;
         end
         buffer_load_mux::load_idex: begin
             packet_in.valid = packet_in_new.valid;

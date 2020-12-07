@@ -60,7 +60,7 @@ assign load_buffers = inst_mem_resp && (!ex_mem.valid || !ex_mem.ctrl.mem || dat
 // Buffer select
 assign if_id_sel = buffer_load_mux::load_ifid;
 
-assign ex_mem_sel = id_ex.ctrl.ex ? buffer_load_mux::load_exmem : buffer_load_mux::use_old;
+assign ex_mem_sel = buffer_load_mux::load_exmem; // For LUI: won't overwrite needed data, but get prediction result
 assign mem_wb_sel = (ex_mem.valid && ex_mem.ctrl.mem) ? buffer_load_mux::load_memwb : buffer_load_mux::use_old;
 
 // Check for data hazard and stalling: one of the sr is the dr for previous ld
