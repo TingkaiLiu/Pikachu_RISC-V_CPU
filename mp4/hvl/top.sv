@@ -35,6 +35,39 @@ assign rvfi.halt = wb_pkt.valid && (wb_pkt.data.pc == wb_pkt.data.next_pc); // S
 initial rvfi.order = 0;
 always @(posedge itf.clk iff rvfi.commit) rvfi.order <= rvfi.order + 1; // Modify for OoO
 
+// Performance evaluation
+// Total branches
+int total_branches;
+initial total_branches = 0;
+always @(posedge itf.clk iff rvfi.commit && 
+    (wb_pkt.inst.opcode == op_jal || wb_pkt.inst.opcode == op_jalr || wb_pkt.inst.opcode == op_br)) total_branches <= total_branches + 1;
+
+// Branch predictor
+int wrong_prediction;
+initial wrong_prediction = 0;
+always @(posedge itf.clk iff rvfi.commit && !wb_pkt.data.correct_pc_prediction) wrong_prediction <= wrong_prediction + 1;
+
+// Total memory access
+int mem_access;
+initial mem_access = 0;
+always @(posedge itf.clk iff rvfi.commit && wb_pkt.ctrl.mem) mem_access <= mem_access + 1;
+
+// L1 cache miss
+int l1_miss;
+initial l1_miss = 0;
+always @(posedge itf.clk iff dut.cache_top.Dcache2.control.state == 1) l1_miss <= l1_miss + 1;
+
+// L2 cache miss
+int l2_miss;
+initial l2_miss = 0;
+always @(posedge itf.clk iff dut.cache_top.Dcache2.control.state == 1 && !dut.cache_top.Dcache2.control.hit_i) 
+    l2_miss <= l2_miss + 1;
+
+// Stall
+int stall_count;
+initial stall_count = 0;
+always @(posedge itf.clk iff dut.cpu.id_ex_sel == buffer_load_mux::load_invalid) stall_count <= stall_count + 1;
+
 /*
 The following signals need to be set:
 Instruction and trap:
