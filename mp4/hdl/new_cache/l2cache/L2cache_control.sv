@@ -1,7 +1,7 @@
 /* MODIFY. The cache controller. It is a state machine
 that controls the behavior of the cache. */
 
-module cache_control (
+module L2cache_control (
     input logic clk,
     input logic rst,
     // from datapath
@@ -14,11 +14,9 @@ module cache_control (
     output domux::domux_sel_t domux_sel,
     output addrmux::addrmux_sel_t addrmux_sel,
     output wemux::wemux_sel_t wemux_sel [3:0],
-    output logic lru_load,
     output logic [3:0] valid_load,
     output logic [3:0] dirty_load,
     output logic [3:0] tag_load,
-    output logic [2:0] lru_o,
     output logic [3:0] valid_o,
     output logic [3:0] dirty_o,
     // CPU
@@ -63,19 +61,9 @@ always_comb begin
     endcase
 end
 
-// to avoid circular assignment
-always_ff @(posedge clk) begin
-    case (hit_i)
-        4'b0001: begin lru_o[1] <= 1'b0; lru_o[0] <= 1'b0; lru_o[2] <= lru_i[2]; end
-        4'b0010: begin lru_o[1] <= 1'b1; lru_o[0] <= 1'b0; lru_o[2] <= lru_i[2]; end
-        4'b0100: begin lru_o[2] <= 1'b0; lru_o[0] <= 1'b1; lru_o[1] <= lru_i[1]; end
-        4'b1000: begin lru_o[2] <= 1'b1; lru_o[0] <= 1'b1; lru_o[1] <= lru_i[1]; end
-        default: lru_o <= lru_i;
-    endcase
-end
-
 enum int unsigned {
     /* List of states */
+    wait_state,
     hit_check_state,
     write_back_state,
     read_back_state
@@ -89,8 +77,6 @@ function void set_defaults();
     wemux_sel[1] = wemux::zeros;
     wemux_sel[2] = wemux::zeros;
     wemux_sel[3] = wemux::zeros;
-    lru_load = 1'b0;
-    // lru_o = lru_i;
     valid_load  = 4'b0000;
     valid_o     = 4'b0000;
     dirty_load  = 4'b0000;
@@ -109,20 +95,18 @@ begin : state_actions
     set_defaults();
     /* Actions for each state */
     case (state)
+        wait_state: ;
         hit_check_state:
-            if (mem_read || mem_write) begin
-                if (hit_i != 4'b0000) begin
-                    lru_load = 1'b1;
-                    mem_resp = 1'b1;
+            if (hit_i) begin
+                mem_resp = 1'b1;
 
-                    if (mem_read)
-                        domux_sel = domux::domux_sel_t'(hit_way_num);
-                    else if (mem_write) begin
-                        dimux_sel = dimux::mem_wdata256_from_cpu;
-                        wemux_sel  [hit_way_num] = wemux::mbe;
-                        dirty_load [hit_way_num] = 1'b1;
-                        dirty_o    [hit_way_num] = 1'b1;
-                    end
+                if (mem_read)
+                    domux_sel = domux::domux_sel_t'(hit_way_num);
+                else begin
+                    dimux_sel = dimux::mem_wdata256_from_cpu;
+                    wemux_sel  [hit_way_num] = wemux::mbe;
+                    dirty_load [hit_way_num] = 1'b1;
+                    dirty_o    [hit_way_num] = 1'b1;
                 end
             end
         write_back_state:
@@ -134,13 +118,15 @@ begin : state_actions
         read_back_state:
         begin
             pmem_read = 1'b1;
-            dimux_sel = dimux::pmem_rdata_from_mem;   
-            wemux_sel  [rpl_way_num] = wemux::ones;
-            valid_load [rpl_way_num] = 1'b1;
-            dirty_load [rpl_way_num] = 1'b1;
-            tag_load   [rpl_way_num] = 1'b1;
-            valid_o    [rpl_way_num] = 1'b1;
-            dirty_o    [rpl_way_num] = 1'b0;
+            if (pmem_resp) begin
+                dimux_sel = dimux::pmem_rdata_from_mem;   
+                wemux_sel  [rpl_way_num] = wemux::ones;
+                valid_load [rpl_way_num] = 1'b1;
+                dirty_load [rpl_way_num] = 1'b1;
+                tag_load   [rpl_way_num] = 1'b1;
+                valid_o    [rpl_way_num] = 1'b1;
+                dirty_o    [rpl_way_num] = 1'b0;
+            end
         end
         default: ;
     endcase
@@ -152,21 +138,26 @@ begin : next_state_logic
      * for transitioning between states */
 	 next_state = state;
      case (state)
-        hit_check_state:
-            if (mem_read || mem_write) begin
-                if (hit_i == 4'b0000) begin
-                    if (dirty_i[rpl_way_num] && valid_i[rpl_way_num])
-                        next_state = write_back_state;
-                    else
-                        next_state = read_back_state;
-                end
-            end
+        wait_state:
+        begin
+            if (mem_read || mem_write)
+                next_state = hit_check_state;
+        end
+        hit_check_state: 
+            if (!hit_i) begin
+                if (dirty_i[rpl_way_num] && valid_i[rpl_way_num])
+                    next_state = write_back_state;
+                else
+                    next_state = read_back_state;
+            end 
+            else
+                next_state = wait_state;
         write_back_state:
             if (pmem_resp)
                 next_state = read_back_state;
         read_back_state:
             if (pmem_resp)
-                next_state = hit_check_state;
+                next_state = wait_state;
         default: ;
      endcase
 end
@@ -175,9 +166,9 @@ always_ff @(posedge clk)
 begin: next_state_assignment
     /* Assignment of next state on clock edge */
     if (rst)
-        state <= hit_check_state;
+        state <= wait_state;
     else
         state <= next_state;
 end
 
-endmodule : cache_control
+endmodule : L2cache_control

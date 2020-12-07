@@ -44,6 +44,7 @@ rv32i_packet_t mem_wb;
 logic br_en;
 rv32i_word alu_out;
 logic correct_pc_prediction;
+rv32i_word correct_next_pc;
 logic [3:0] rmask;
 
 pcmux::pcmux_sel_t pcmux_sel;
@@ -65,6 +66,10 @@ logic [31:0] regfile_in;
 logic [4:0] rs1, rs2, dest;
 logic [31:0] reg_a, reg_b;
 
+// Connection with branch predictor
+rv32i_word current_pc;
+rv32i_word predict_next_pc;
+
 cpu_control control(.*);
 
 control_rom control_rom0(.*);
@@ -77,9 +82,16 @@ assign wb_in = mem_wb;
 // Datapath 
 IF IF(.*);
 
+branch_predictor bp(
+    .*,
+    .if_pc(current_pc),
+    .if_pred_pc(predict_next_pc),
+    .wb_pkt(wb_in)
+);
+
 buffer IF_ID(
     .*, .load(load_pc), .buffer_sel(if_id_sel),
-    .packet_in_old(0), .packet_in_new(if_out), .packet_out(if_id)
+    .packet_in_old('0), .packet_in_new(if_out), .packet_out(if_id)
 );
 
 ID ID(.*);
@@ -94,7 +106,7 @@ buffer ID_EX(
     .packet_in_old(id_in), .packet_in_new(id_out), .packet_out(id_ex)
 );
 
-EX EX(.*, .ctrl(ex_ctrl), .from_exmem(0), .from_memwb(0)); // TODO:
+EX EX(.*, .ctrl(ex_ctrl)); 
 
 buffer EX_MEM(
     .*, .load(load_buffers), .buffer_sel(ex_mem_sel),

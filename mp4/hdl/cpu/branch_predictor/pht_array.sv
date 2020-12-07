@@ -38,8 +38,9 @@ end
 always_ff @(posedge clk)
 begin
     if (rst) begin
-        for (int i = 0; i < num_sets; ++i)
-            data[i] <= 2'b01;
+        // for (int i = 0; i < num_sets; ++i)
+        //     data[i] <= 2'b01;
+        data <= '{num_sets{2'b00}};
     end
     else begin
         if(load)
