@@ -24,6 +24,7 @@ typedef struct packed {
     rv32i_word pc;
     rv32i_word instruction; // raw instuction
     rv32i_word next_pc; // for branch pridiction and control hazard
+    rv32i_word predicted_pc;
     // ID
     rv32i_word rs1_out;
     rv32i_word rs2_out;

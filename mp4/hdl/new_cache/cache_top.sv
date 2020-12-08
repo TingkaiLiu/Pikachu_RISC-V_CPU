@@ -28,7 +28,14 @@ module cache_top(
     input logic mem_resp
 );
 
-// I-Cache - Arbiter
+// L1 I-Cache - L2 I-Cache
+logic imem1_read;
+logic imem1_write;
+llc_cacheline imem1_rdata;
+llc_cacheline imem1_wdata;
+logic imem1_resp;
+rv32i_word imem1_address;
+// L2 I-Cache - Arbiter
 logic imem_read;
 logic imem_write;
 llc_cacheline imem_rdata;
@@ -57,7 +64,7 @@ llc_cacheline mmem_wdata;
 logic mmem_resp;
 rv32i_word mmem_address;
 
-cache Icache(
+cache Icache1(
     .*,
     // CPU
     .mem_address        (inst_mem_address),
@@ -67,6 +74,24 @@ cache Icache(
     .mem_read           (inst_mem_read),
     .mem_write          (inst_mem_write),
     .mem_resp           (inst_mem_resp),
+    // Arbiter
+    .pmem_read          (imem1_read),
+    .pmem_write         (imem1_write),
+    .pmem_rdata         (imem1_rdata),
+    .pmem_wdata         (imem1_wdata),
+    .pmem_resp          (imem1_resp),
+    .pmem_address       (imem1_address)
+);
+L2cache Icache2(
+    .*,
+    // L-1 I-Cache
+    .mem_address        (imem1_address),
+    // .mem_byte_enable    (data_mem_byte_enable),
+    .mem_wdata          (imem1_wdata),
+    .mem_rdata          (imem1_rdata),
+    .mem_read           (imem1_read),
+    .mem_write          (imem1_write),
+    .mem_resp           (imem1_resp),
     // Arbiter
     .pmem_read          (imem_read),
     .pmem_write         (imem_write),

@@ -2,7 +2,7 @@ import rv32i_types::*;
 import rv32i_packet::*;
 
 module branch_predictor #(
-    parameter s_bhr = 8
+    parameter s_bhr = 9
 )
 (
     clk,
@@ -33,7 +33,9 @@ logic [1:0] pht_out_pred;
 logic [31:0] btb_out_pred;
 logic [s_bhr-1:0] bpindex;
 
-assign bpindex = if_pc[s_bhr-1:0] ^ bhr_out;
+// assign bpindex = if_pc[s_bhr-1:0] ^ bhr_out; // TODO: delete ^ if not needed
+assign bpindex = if_pc[s_bhr-1:0];
+
 assign if_pred_pc = (pht_out_pred[1]) ? btb_out_pred : if_pc + 4;
 
 // for update tables
@@ -41,7 +43,8 @@ logic actl_take;
 assign actl_take = (wb_pkt.data.pc + 4 == wb_pkt.data.next_pc) ? 1'b0 : 1'b1;
 logic update;
 assign update = (load_buffers && wb_pkt.valid && 
-    ((wb_pkt.inst.opcode == op_br) || (wb_pkt.inst.opcode == op_jal) || (wb_pkt.inst.opcode == op_jalr))) ? 1'b1 : 1'b0;
+    ((wb_pkt.inst.opcode == op_br) || (wb_pkt.inst.opcode == op_jal) || (wb_pkt.inst.opcode == op_jalr)));
+// assign update = load_buffers && wb_pkt.valid;
 // assign rindex = wb_pkt.data.pc[s_bhr-1:0] ^ bhr_out; // TODO: delete ^ if not needed
 assign rindex = wb_pkt.data.pc[s_bhr-1:0];
 
@@ -49,7 +52,8 @@ assign rindex = wb_pkt.data.pc[s_bhr-1:0];
 always_ff @(posedge clk) begin
     if (update) begin
         load <= 1'b1;
-        windex <= wb_pkt.data.pc[s_bhr-1:0] ^ bhr_out;
+        // windex <= wb_pkt.data.pc[s_bhr-1:0] ^ bhr_out; // TODO: delete ^ if not needed
+        windex <= wb_pkt.data.pc[s_bhr-1:0];
         bhr_in <= (bhr_out << 1) | {{(s_bhr-1){1'b0}}, actl_take};
         if (actl_take) begin
             case (pht_out)
