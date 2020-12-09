@@ -53,15 +53,24 @@ initial mem_access = 0;
 always @(posedge itf.clk iff rvfi.commit && wb_pkt.ctrl.mem) mem_access <= mem_access + 1;
 
 // L1 cache miss
-int l1_miss;
-initial l1_miss = 0;
-always @(posedge itf.clk iff dut.cache_top.Dcache2.control.state == 1) l1_miss <= l1_miss + 1;
+int dl1_miss;
+initial dl1_miss = 0;
+always @(posedge itf.clk iff dut.cache_top.Dcache2.control.state == 1) dl1_miss <= dl1_miss + 1;
+
+int il1_miss;
+initial il1_miss = 0;
+always @(posedge itf.clk iff dut.cache_top.Icache2.control.state == 1) il1_miss <= il1_miss + 1;
 
 // L2 cache miss
-int l2_miss;
-initial l2_miss = 0;
+int dl2_miss;
+initial dl2_miss = 0;
 always @(posedge itf.clk iff dut.cache_top.Dcache2.control.state == 1 && !dut.cache_top.Dcache2.control.hit_i) 
-    l2_miss <= l2_miss + 1;
+    dl2_miss <= dl2_miss + 1;
+
+int il2_miss;
+initial il2_miss = 0;
+always @(posedge itf.clk iff dut.cache_top.Icache2.control.state == 1 && !dut.cache_top.Icache2.control.hit_i) 
+    il2_miss <= il2_miss + 1;
 
 // Stall
 int stall_count;
